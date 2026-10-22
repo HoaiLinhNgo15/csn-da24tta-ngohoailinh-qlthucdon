@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="vi">
+  <!--Đây là phần head-->
+  <head>
+    <title>Thực đơn căn tin TVU</title>
+    <meta charset="utf-8" />
+    <link href="assets/css/style.css" rel="StyleSheet" />
+  </head>
+  <!--Hết phần head-->
+
+  <!--Bắt đầu Trang Web (body)-->
+  <body>
+    <!--phần header-->
+    <div id="header">
+      <div id="logo">
+        <img id="logoTVU" src="assets/images/logoTVU.png" />
+      </div>
+      <div id="heading-search-menu">
+        <div id="heading-home">Thực đơn căn tin trường</div>
+        <div id="search-menu">
+          <form class="frm-search">
+            <input
+              type="text"
+              name="search-box"
+              id="search-box"
+              placeholder="Tìm kiếm món ăn"
+            />
+          </form>
+
+          <ul id="header-menu">
+            <!--Javascrip lấy tên nhóm món ra từ cơ sở dữ liệu và tạo một phần từ <li></li> mới -> thêm vào id này-->
+            <li class="nhom-mon"><a href="#">Món chính</a></li>
+            <li class="nhom-mon"><a href="#">Món phụ</a></li>
+            <li class="nhom-mon"><a href="#">Tráng miệng</a></li>
+            <li class="nhom-mon"><a href="#">Thức uống</a></li>
+        </div>
+      </div>
+    </div>
+    <!--Kết thúc header-->
+
+    <!--phần content-->
+    <div id="content">
+      <div id="sidebar"></div>
+      <div id="danhmucbuoi"></div>
+      <div id="monan"></div>
+    </div>
+    <!--Kết thúc content-->
+
+    <!--phần footer-->
+    <div id="footer"></div>
+    <!--Kết thúc footer-->
+  </body>
+  <!--Kết thúc phần Trang Webbody-->
+</html>

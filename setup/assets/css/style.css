@@ -1,0 +1,110 @@
+/*File định dạng cho Trang chủ*/
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  color: var(--text-main);
+}
+
+:root {
+  --bg-main: #f8f9fa; /* 60% - Màu nền chính (Xám trắng nhạt) */
+  --text-main: #1e293b; /* 30% - Màu chữ &amp; Tiêu đề (Xám than / Charcoal) \*/
+  --accent-main: #f97316; /* 10% - Màu nhấn (Cam ấm Căn tin) */
+}
+html {
+  background-color: var(--bg-main);
+}
+
+#header {
+  display: flex;
+  background-color: var(--accent-main);
+  height: 140px;
+  flex-wrap: nowrap;
+  padding: 0 162px;
+  min-width: 1000px;
+}
+
+#logo {
+  flex: 1;
+  text-align: center;
+  padding: 12px 16px 12px 0;
+}
+
+#logoTVU {
+  height: 100%;
+  width: auto;
+}
+
+#heading-search-menu {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 547px;
+}
+
+#heading-home {
+  flex: 1;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 28pt;
+  text-transform: uppercase;
+  font-weight: bolder;
+  width: 100%;
+}
+
+#search-menu {
+  flex: 1;
+  display: flex;
+  width: 100%;
+}
+
+.frm-search {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 16px;
+  padding-left: 0;
+  min-width: 220px;
+}
+
+#search-box {
+  border: none;
+  height: 42px;
+  width: 100%;
+  border-radius: 12px;
+  padding: 8px;
+  font-size: 18pt;
+}
+
+#header-menu {
+  flex: 2;
+  list-style: none;
+  display: flex;
+  flex-wrap: nowrap;
+  font-size: 18pt;
+  overflow-x: auto;
+  max-width: 821px;
+}
+
+#header-menu .nhom-mon {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 124px;
+}
+
+#header-menu .nhom-mon a {
+  text-decoration: none;
+}
+
+#header-menu .nhom-mon:hover {
+  background-color: #f69b5a;
+}
+
+/*định dạng phần trang web*/
+
