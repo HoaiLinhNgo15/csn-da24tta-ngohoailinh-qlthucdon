@@ -11,10 +11,10 @@
   flex-direction: column;
   height: 100vh;
   width: 100%;
-  background-color: #f8f9fa;
+  background-color: #f8fafc;
 }
 
-.frm-login {
+#login-card {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -24,10 +24,10 @@
   min-width: 320px;
   height: 400px;
   padding: 32px;
-  background-color: #f0f0f0;
-  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
+  background-color: #fff;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.05);
 }
-.frm-login #header-login {
+#login-card #header-login {
   font-size: 24pt;
   text-align: center;
   text-transform: uppercase;
@@ -35,27 +35,49 @@
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   margin-bottom: 32px;
 }
-.frm-login .textbox {
-  border: none;
+
+#login-card label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  padding: 0 12px;
+  margin-top: 16px;
+}
+
+#login-card .textbox {
+  border: 1px solid #cbd5e1;
   border-radius: 8px;
-  height: 42px;
-  padding: 12px;
-  margin-top: 24px;
+  padding: 12px 12px;
   font-size: 14pt;
+  background-color: #f8fafc;
+  outline: none;
+}
+.textbox:focus-within {
+  background-color: #ffffff;
+  border-color: #ff7a00;
+  box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.1);
+}
+
+#login-card svg {
+  margin-left: 8px;
+  flex-shrink: 0;
+  stroke: #64748b;
 }
 
 #btn-box {
   display: block;
   margin-bottom: 12px;
+  width: 100%;
 }
 
 .btn {
   height: 42px;
   padding: 12px;
   margin-top: 24px;
-  width: 120px;
+  width: 100%;
   font-size: 14pt;
-  background-color: #f97316;
+  background-color: #ff7a00;
   border: none;
   border-radius: 12px;
 }

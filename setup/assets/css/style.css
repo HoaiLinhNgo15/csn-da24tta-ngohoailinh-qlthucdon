@@ -10,7 +10,7 @@
 :root {
   --bg-main: #f8f9fa; /* 60% - Màu nền chính (Xám trắng nhạt) */
   --text-main: #1e293b; /* 30% - Màu chữ &amp; Tiêu đề (Xám than / Charcoal) \*/
-  --accent-main: #f97316; /* 10% - Màu nhấn (Cam ấm Căn tin) */
+  --accent-main: #ff7a00; /* 10% - Màu nhấn (Cam ấm Căn tin) */
 }
 html {
   background-color: var(--bg-main);
@@ -107,4 +107,3 @@ html {
 }
 
 /*định dạng phần trang web*/
-

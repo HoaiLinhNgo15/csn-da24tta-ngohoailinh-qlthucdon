@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <title>Trang quản trị hệ thống</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="css/css-admin.css" />
+    <link rel="stylesheet" href="font/themify-icons/themify-icons.css">
+    <script>
+      (function checkAdminAuth() {
+        const isLogged = sessionStorage.getItem("isAdminLoggedIn");
+
+        if (isLogged !== "true") {
+          alert(
+            "Bạn cần đăng nhập quyền quản trị viên để truy cập vào trang này",
+          );
+          window.location.href = "login.html";
+        }
+      })();
+      function logoutforAdmin() {
+        if (confirm("Bạn có chắc chắn muốn kết thúc phiên làm việc này?")) {
+          sessionStorage.clear();
+          window.location.href = "login.html";
+        }
+      }
+    </script>
+  </head>
+
+  <body>
+    <div id="container">
+      <div id="header-admin">
+        <div id="img">
+          <img src="images/avt-admin.png" alt="" />
+        </div>
+        <div id="title-header">
+          <h2>Quản lý thực đơn căn tin trường học</h2>
+          <p>Admin</p>
+        </div>
+        <div id="logout">
+          <button class="btn" onclick="logoutforAdmin()">Logout</button>
+        </div>
+      </div>
+
+      <div id="content-admin">
+        <div id="menu-admin"></div>
+        <div id="work-admin"></div>
+      </div>
+    </div>
+  </body>
+</html>

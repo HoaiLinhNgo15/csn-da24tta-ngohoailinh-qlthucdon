@@ -3,35 +3,74 @@
   <head>
     <title>Đăng nhập trang Admin</title>
     <meta charset="utf-8" />
-    <link href="../assets/css/css-login.css" rel="Stylesheet" />
+    <link href="css/css-login.css" rel="Stylesheet" />
   </head>
   <body>
     <div class="container">
-      <form class="frm-login">
-        <h2 id="header-login">Đăng nhập</h2>
-        <label for="username">
-          <input
-            type="text"
-            name="username"
-            id="username"
-            class="textbox"
-            placeholder="Tên đăng nhập"
-          />
-        </label>
-        <label for="password">
-          <input
-            type="password"
-            name="password"
-            id="password"
-            class="textbox"
-            placeholder="Mật khẩu"
-          />
-        </label>
-        <div id="btn-box">
-          <input type="button" value="Đăng nhập" id="btn-login" class="btn" />
-          <input type="button" value="Hủy bỏ" id="btn-cancel" class="btn" />
+      <!--form đăng nhập-->
+      <div id="login-card">
+        <div>
+          <h2 id="header-login">Đăng nhập quản trị</h2>
+          <p id="subheader">Hệ thống quản lý dành cho quản trị viên</p>
+          <div id="message-Error" class="alert-error" style="display:none;"></div>
         </div>
-      </form>
+        <form id="frm-login">
+          <label for="username">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#888"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            <input
+              type="text"
+              name="username"
+              id="username"
+              class="textbox"
+              placeholder="Tên đăng nhập"
+              autocomplete="off"
+            />
+          </label>
+  
+          <label for="password">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#888"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            <input
+              type="password"
+              name="password"
+              id="password"
+              class="textbox"
+              placeholder="Mật khẩu"
+            />
+          </label>
+  
+          <div id="btn-box">
+            <input type="submit" value="Đăng nhập" id="btn-login" class="btn" />
+          </div>
+        </form>
+        <div id="footer">
+          <a href="index.html">Quay lại trang chủ</a>
+        </div>
     </div>
+
+    <script type="module" src="login.js"></script>
   </body>
 </html>
