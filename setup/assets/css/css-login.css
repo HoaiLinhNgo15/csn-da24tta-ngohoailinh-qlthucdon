@@ -2,6 +2,14 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+:root {
+  --bg-main: #f8f9fa;
+  --text-main: #1e293b;
+  --accent-main: #ff7a00;
+  --btn-hover: #cf5c0a;
 }
 
 .container {
@@ -20,20 +28,48 @@
   align-items: center;
   flex-direction: column;
   border-radius: 24px;
-  min-height: 293px;
   min-width: 320px;
-  height: 400px;
-  padding: 32px;
   background-color: #fff;
   box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.05);
+  min-height: 380px;
+  box-sizing: border-box;
+  padding-bottom: 12px;
 }
+
+#login-header {
+  width: 100%;
+  background-color: var(--accent-main);
+  margin-top: 0;
+  border-radius: 24px 24px 0 0;
+  padding: 16px;
+}
+
 #login-card #header-login {
   font-size: 24pt;
   text-align: center;
   text-transform: uppercase;
   font-weight: bolder;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  margin-bottom: 32px;
+}
+
+#subheader {
+  text-align: center;
+}
+
+#content {
+  top: 110px;
+  padding: 16px;
+  width: 100%;
+  min-height: 275px;
+}
+
+#message-Error {
+  width: 100%;
+  color: red;
+  text-align: center;
+}
+
+#frm-login {
+  width: 100%;
 }
 
 #login-card label {
@@ -43,6 +79,7 @@
   background-color: #fff;
   padding: 0 12px;
   margin-top: 16px;
+  width: 100%;
 }
 
 #login-card .textbox {
@@ -52,36 +89,47 @@
   font-size: 14pt;
   background-color: #f8fafc;
   outline: none;
+  width: 100%;
 }
 .textbox:focus-within {
   background-color: #ffffff;
-  border-color: #ff7a00;
+  border-color: var(--accent-main);
   box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.1);
 }
 
 #login-card svg {
-  margin-left: 8px;
+  margin-right: 8px;
   flex-shrink: 0;
   stroke: #64748b;
 }
 
 #btn-box {
-  display: block;
   margin-bottom: 12px;
   width: 100%;
 }
 
 .btn {
-  height: 42px;
+  height: 52px;
   padding: 12px;
   margin-top: 24px;
   width: 100%;
   font-size: 14pt;
-  background-color: #ff7a00;
+  background-color: var(--accent-main);
   border: none;
   border-radius: 12px;
+  text-align: center;
 }
 
 .btn:hover {
-  background-color: #cf5c0a;
+  background-color: var(--btn-hover);
+  cursor: pointer;
+}
+
+#footer {
+  width: 100%;
+  text-align: end;
+}
+
+#footer a {
+  text-decoration: none;
 }

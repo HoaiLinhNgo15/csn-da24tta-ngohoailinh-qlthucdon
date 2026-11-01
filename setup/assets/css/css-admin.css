@@ -3,6 +3,7 @@
   padding: 0;
   box-sizing: border-box;
   color: var(--text-main);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 :root {
   --bg-main: #f8f9fa;
@@ -24,6 +25,7 @@
 }
 .btn:hover {
   background-color: var(--btn-hover);
+  cursor: pointer;
 }
 
 /*Định dạng riêng cho từng phần*/
@@ -32,8 +34,8 @@
 }
 
 .layout-works {
-  padding: 12px;
   height: 600px;
+  padding: 12px;
 }
 
 #header-admin {
@@ -43,6 +45,7 @@
   position: fixed;
   left: 0;
   right: 0;
+  z-index: -2;
 }
 
 #image {
@@ -88,6 +91,7 @@
   padding: 12px;
   position: fixed;
   top: 120px;
+  z-index: -2;
 }
 #menu-admin .list-menu {
   font-size: 20px;
@@ -107,13 +111,12 @@
 }
 
 #work-admin {
-  height: 100vh;
   position: absolute;
   top: 120px;
   left: 204px;
   right: 0;
   bottom: 0;
-  z-index: -2;
+  z-index: -3;
 }
 
 .subtitle {
@@ -149,4 +152,101 @@ th {
   min-width: 40px;
   width: 62px;
   margin: 0;
+}
+
+#update-container {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: none; /*none: ẩn - flex: hiện*/
+  justify-content: center;
+  align-items: center;
+  z-index: 9;
+}
+
+#update-monan {
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  position: absolute;
+  border-radius: 18px;
+  padding: 16px;
+  font-size: 22px;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+#update-header {
+  display: flex;
+  background-color: var(--accent-main);
+  width: 100%;
+  height: 60px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  border-radius: 18px 18px 0 0;
+  padding: 12px;
+}
+
+#update-header h3 {
+  min-width: 240px;
+}
+
+#header-close {
+  width: 100%;
+  display: flex;
+  justify-content: end;
+}
+
+#header-close .btn {
+  margin: 0;
+  height: 100%;
+  width: 46px;
+  min-width: 60px;
+  text-align: center;
+}
+
+#update-content {
+  margin-top: 60px;
+}
+
+#frm-update {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+}
+
+#frm-update label {
+}
+
+#frm-update input {
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 14pt;
+  background-color: #f8fafc;
+  outline: none;
+  margin-bottom: 12px;
+}
+
+#frm-update input:focus-within {
+  background-color: #fff;
+  border-color: var(--accent-main);
+  box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.1);
+}
+
+#update-footer {
+  display: flex;
+  justify-content: space-between;
+}
+
+#update-footer .btn {
+  min-width: 180px;
+}
+
+#btn-space {
+  margin-right: 18px;
 }
