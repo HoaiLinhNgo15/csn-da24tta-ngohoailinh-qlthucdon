@@ -8,37 +8,50 @@
   --bg-main: #f8f9fa;
   --text-main: #1e293b;
   --accent-main: #ff7a00;
+  --btn-hover: #cf5c0a;
 }
 
 /*định dạng chung*/
 .btn {
   height: 46px;
   width: 124px;
-  background-color: var(--bg-main);
+  background-color: var(--accent-main);
   border: none;
   border-radius: 8px;
   padding: 12px;
-  font-size: 20px;
+  font-size: 16px;
   text-transform: uppercase;
 }
+.btn:hover {
+  background-color: var(--btn-hover);
+}
 
+/*Định dạng riêng cho từng phần*/
 #container {
   background-color: var(--bg-main);
 }
 
-#header-admin {
-  display: flex;
-  flex-wrap: wrap;
-  height: 140px;
-  background-color: var(--accent-main);
+.layout-works {
+  padding: 12px;
+  height: 600px;
 }
 
-#img {
-  width: 140px;
-  margin-right: 24px;
+#header-admin {
+  display: flex;
+  height: 120px;
+  background-color: var(--accent-main);
+  position: fixed;
+  left: 0;
+  right: 0;
 }
-#img img {
-  width: 100%;
+
+#image {
+  min-width: 120px;
+  margin-right: 24px;
+  padding: 12px;
+}
+#image img {
+  max-width: 96px;
   height: auto;
 }
 
@@ -46,6 +59,7 @@
   display: flex;
   justify-content: center;
   flex-direction: column;
+  min-width: 702px;
 }
 #title-header h2 {
   font-size: 32px;
@@ -57,13 +71,82 @@
 }
 
 #logout {
+  width: 100%;
+  display: flex;
+  justify-content: end;
+  align-items: end;
 }
 
 #content-admin {
+  display: flex;
+  flex-wrap: nowrap;
 }
 
 #menu-admin {
+  background-color: var(--accent-main);
+  height: 100vh;
+  padding: 12px;
+  position: fixed;
+  top: 120px;
+}
+#menu-admin .list-menu {
+  font-size: 20px;
+  border-radius: 8px;
+  margin-top: 8px;
+  height: 46px;
+  line-height: 46px;
+  min-width: 180px;
+  text-align: center;
+}
+#menu-admin .list-menu:hover {
+  /*khi đang được chọn*/
+  background-color: var(--btn-hover);
+}
+#menu-admin a {
+  text-decoration: none;
 }
 
 #work-admin {
+  height: 100vh;
+  position: absolute;
+  top: 120px;
+  left: 204px;
+  right: 0;
+  bottom: 0;
+  z-index: -2;
+}
+
+.subtitle {
+  font-size: 24px;
+  text-transform: uppercase;
+}
+
+#ql-monan .btn {
+  min-width: 180px;
+  margin: 16px 0;
+}
+
+table,
+td,
+tr,
+th {
+  border: 2px solid #1e293b;
+  border-collapse: collapse;
+}
+
+table {
+  width: 100%;
+}
+
+td,
+th {
+  padding: 12px;
+  font-size: 20px;
+  text-align: center;
+}
+
+#col-edit .btn {
+  min-width: 40px;
+  width: 62px;
+  margin: 0;
 }

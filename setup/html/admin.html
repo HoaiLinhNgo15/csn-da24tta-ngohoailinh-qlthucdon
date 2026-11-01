@@ -4,7 +4,7 @@
     <title>Trang quản trị hệ thống</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="css/css-admin.css" />
-    <link rel="stylesheet" href="font/themify-icons/themify-icons.css">
+    <link rel="stylesheet" href="font/themify-icons/themify-icons.css" />
     <script>
       (function checkAdminAuth() {
         const isLogged = sessionStorage.getItem("isAdminLoggedIn");
@@ -28,7 +28,7 @@
   <body>
     <div id="container">
       <div id="header-admin">
-        <div id="img">
+        <div id="image">
           <img src="images/avt-admin.png" alt="" />
         </div>
         <div id="title-header">
@@ -36,13 +36,103 @@
           <p>Admin</p>
         </div>
         <div id="logout">
-          <button class="btn" onclick="logoutforAdmin()">Logout</button>
+          <button class="btn" onclick="logoutforAdmin()">
+            Logout
+            <i class="ti-new-window"></i>
+          </button>
         </div>
       </div>
 
       <div id="content-admin">
-        <div id="menu-admin"></div>
-        <div id="work-admin"></div>
+        <div id="menu-admin">
+          <nav>
+            <li class="list-menu">
+              <a href="#ql-monan">Quản lý món ăn</a>
+            </li>
+
+            <li class="list-menu">
+              <a href="#lap-thucdon">Lập thực đơn</a>
+            </li>
+
+            <li class="list-menu">
+              <a href="#trangthai">Trạng thái còn/hết</a>
+            </li>
+
+            <li class="list-menu">
+              <a href="#luotquantam">Lượt quan tâm</a>
+            </li>
+          </nav>
+        </div>
+
+        <div id="work-admin">
+          <div id="ql-monan" class="layout-works">
+            <h2 class="subtitle">Quản lý món ăn</h2>
+            <button class="btn">Thêm món ăn mới</button>
+            <!--Thiết kế giao diện với 4 dòng, sẽ rót dữ liệu vào sau khi kết nối sql-->
+            <table id="table-admin">
+              <tr class="record">
+                <th>STT</th>
+                <th>Hình ảnh</th>
+                <th>Tên món</th>
+                <th>Nhóm món</th>
+                <th>Giá bán</th>
+                <th>Trạng thái</th>
+                <th>Thao tác</th>
+              </tr>
+
+              <tr class="record">
+                <td>1</td>
+                <td><img src="" alt="" /></td>
+                <td>Bún bò</td>
+                <td>Món chính</td>
+                <td>30000 VND</td>
+                <td>Còn</td>
+                <td id="col-edit">
+                  <button class="btn">sửa</button>
+                  <button class="btn">xóa</button>
+                </td>
+              </tr>
+
+              <tr class="record">
+                <td>2</td>
+                <td><img src="" alt="" /></td>
+                <td>Cơm sườn</td>
+                <td>Món chính</td>
+                <td>30000 VND</td>
+                <td>Còn</td>
+                <td id="col-edit">
+                  <button class="btn">sửa</button>
+                  <button class="btn">xóa</button>
+                </td>
+              </tr>
+
+              <tr class="record">
+                <td>3</td>
+                <td><img src="" alt="" /></td>
+                <td>Hoa quả</td>
+                <td>Tráng miệng</td>
+                <td>20000 VND</td>
+                <td>Còn</td>
+                <td id="col-edit">
+                  <button class="btn">sửa</button>
+                  <button class="btn">xóa</button>
+                </td>
+              </tr>
+            </table>
+          </div>
+
+          <div id="lap-thucdon" class="layout-works">
+            <h2 class="subtitle">Lập thực đơn</h2>
+          </div>
+
+          <div id="trangthai" class="layout-works">
+            <h2 class="subtitle">Trạng thái còn/hết</h2>
+          </div>
+
+          <div id="luotquantam" class="layout-works">
+            <h2 class="subtitle">Lượt quan tâm</h2>
+          </div>
+        </div>
       </div>
     </div>
   </body>
