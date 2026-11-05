@@ -67,6 +67,28 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
+app.post("/api/admin", async (req, res) => {
+  try{
+    const pool = await getConnection();
+
+    const results = await pool
+          .request()
+          .query("SELECT A.MaMon, A.TenMon, A.HinhAnh, A.GiaBan, B.TenNhom FROM MONAN AS A, NHOMMON AS B WHERE A.MaNhom = B.MaNhom");
+    
+    if (results.recordset.length === 0) {
+      return res.status(401).json({
+        success: false,
+        message: "Không thể truy xuất dữ liệu từ câu lệnh select",
+      });
+    }
+    return res.json(results.recordset);
+  }
+  catch(err) {
+    console.error("CHI TIẾT LỖI TẠI API LOGIN:", err);
+    res.status(500).json({ success: false, message: "Lỗi kết nối server!" });
+  }
+});
+
 app.get("/", (req, res) => {
   res.send("Chào mừng bạn đến với hệ thống Quản lý Canteen!");
 });

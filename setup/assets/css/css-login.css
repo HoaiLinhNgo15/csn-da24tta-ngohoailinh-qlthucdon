@@ -9,7 +9,9 @@
   --bg-main: #f8f9fa;
   --text-main: #1e293b;
   --accent-main: #ff7a00;
-  --btn-hover: #cf5c0a;
+  --btn-hover: #f9fafb;
+  --color-hover: #f97316;
+  --bg-active: #fff7ed;
 }
 
 .container {
@@ -30,7 +32,7 @@
   border-radius: 24px;
   min-width: 320px;
   background-color: #fff;
-  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.05);
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
   min-height: 380px;
   box-sizing: border-box;
   padding-bottom: 12px;
@@ -45,6 +47,7 @@
   margin-top: 0;
   border-radius: 24px 24px 0 0;
   padding: 16px;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 #login-header img {
@@ -99,7 +102,7 @@
   width: 100%;
   box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.05);
 }
-.textbox:focus-within {
+#login-card .textbox:focus-within {
   background-color: #ffffff;
   border-color: var(--accent-main);
   box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.1);
@@ -109,6 +112,7 @@
   margin-right: 8px;
   flex-shrink: 0;
   stroke: #64748b;
+  font-weight: bolder;
 }
 
 #btn-box {
@@ -126,11 +130,18 @@
   border: none;
   border-radius: 12px;
   text-align: center;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
+  font-weight: 500;
 }
 
 .btn:hover {
   background-color: var(--btn-hover);
+  color: var(--color-hover);
   cursor: pointer;
+}
+.btn:active {
+  background-color: var(--bg-active);
+  color: var(--color-hover);
 }
 
 #footer {

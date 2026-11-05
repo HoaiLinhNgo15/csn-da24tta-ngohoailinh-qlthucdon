@@ -16,11 +16,55 @@
           window.location.href = "login.html";
         }
       })();
+
       function logoutforAdmin() {
         if (confirm("Bạn có chắc chắn muốn kết thúc phiên làm việc này?")) {
           sessionStorage.clear();
           window.location.href = "login.html";
         }
+      }
+
+      let currentElement = document.getElementById("ql-monan");
+
+      function showElementById(id) {
+        // Ẩn phần tử cũ nếu có
+        if (currentElement) {
+          currentElement.style.display = "none";
+        }
+
+        // Hiển thị phần tử mới
+        const element = document.getElementById(id);
+        if (element) {
+          element.style.display = "block";
+          currentElement = element; // Cập nhật phần tử hiện đang hiển thị
+        }
+      }
+
+      function showElement(classElement, id) {
+        const elements = document.getElementsByClassName(classElement);
+
+        for (let i = 0; i < elements.length; i++) {
+          elements[i].style.display = "none";
+        }
+
+        const targetElement = document.getElementById(id);
+
+        if (targetElement) {
+          targetElement.style.display = "block";
+          currentElement = targetElement;
+        }
+      }
+      document.addEventListener("DOMContentLoaded", function () {
+        showElement("layout-works", "ql-monan");
+      });
+
+      function showFrm(id) {
+        const element = document.getElementById(id);
+        element.style.display = "flex";
+      }
+      function hideFrm(id) {
+        const element = document.getElementById(id);
+        element.style.display = "none";
       }
     </script>
   </head>
@@ -45,62 +89,92 @@
 
       <div id="content-admin">
         <div id="update-container">
-              <div id="update-monan">
-                <div id="update-header">
-                  <h3>Thêm/sửa món ăn</h3>
-                  <div id="header-close">
-                    <i class="ti-close btn"></i>
-                  </div>
-                </div>
-
-                <div id="update-content">
-                  <form id="frm-update">
-                    <label for="tenmon"> Tên món </label>
-                    <input type="text" name="tenmon" id="tenmon" />
-
-                    <label for="nhommon"> Nhóm món </label>
-                    <input type="text" name="nhommon" id="nhommon" />
-
-                    <label for="giaban"> Giá bán </label>
-                    <input type="text" name="giaban" id="giaban" />
-
-                    <label for="mota"> Mô tả </label>
-                    <input type="text" name="mota" id="mota" />
-
-                    <label for="hinhanh"> Hình ảnh </label>
-                    <input type="text" name="hinhanh" id="hinhanh" />
-                  </form>
-                  <div id="update-footer">
-                    <button class="btn" id="btn-space">Hủy bỏ</button>
-                    <button class="btn">Lưu món ăn</button>
-                  </div>
-                </div>
+          <div id="update-monan">
+            <div id="update-header">
+              <h3>Thêm/sửa món ăn</h3>
+              <div id="header-close" onclick="hideFrm('update-container')">
+                <i class="ti-close btn"></i>
               </div>
             </div>
+
+            <div id="update-content">
+              <form id="frm-update">
+                <label for="tenmon"> Tên món </label>
+                <input type="text" name="tenmon" id="tenmon" />
+
+                <label for="nhommon"> Nhóm món </label>
+                <input type="text" name="nhommon" id="nhommon" list="Nhommon" />
+                <datalist id="Nhommon">
+                  <option value="Món chính"></option>
+                  <option value="Món phụ"></option>
+                  <option value="Tráng miệng"></option>
+                  <option value="Thức uống"></option>
+                </datalist>
+
+                <label for="giaban"> Giá bán </label>
+                <input type="text" name="giaban" id="giaban" />
+
+                <label for="mota"> Mô tả </label>
+                <input type="text" name="mota" id="mota" />
+
+                <label for="hinhanh"> Hình ảnh </label>
+                <input type="text" name="hinhanh" id="hinhanh" />
+              </form>
+              <div id="update-footer">
+                <button
+                  class="btn"
+                  id="btn-space"
+                  onclick="hideFrm('update-container')"
+                >
+                  Hủy bỏ
+                </button>
+                <input type="submit" class="btn" value="Lưu món ăn" />
+              </div>
+            </div>
+          </div>
+        </div>
         <div id="menu-admin">
           <nav>
-            <li class="list-menu">
-              <a href="#ql-monan">Quản lý món ăn</a>
-            </li>
+            <a
+              class="list-menu"
+              id="menu1"
+              onclick="showElementById('ql-monan')"
+              href="#ql-monan"
+              >Quản lý món ăn</a
+            >
 
-            <li class="list-menu">
-              <a href="#lap-thucdon">Lập thực đơn</a>
-            </li>
+            <a
+              class="list-menu"
+              id="menu2"
+              onclick="showElementById('lap-thucdon')"
+              href="#lap-thucdon"
+              >Lập thực đơn</a
+            >
 
-            <li class="list-menu">
-              <a href="#trangthai">Trạng thái còn/hết</a>
-            </li>
+            <a
+              class="list-menu"
+              id="menu3"
+              onclick="showElementById('trangthai')"
+              href="#trangthai"
+              >Trạng thái còn/hết</a
+            >
 
-            <li class="list-menu">
-              <a href="#luotquantam">Lượt quan tâm</a>
-            </li>
+            <a
+              class="list-menu"
+              id="menu4"
+              onclick="showElementById('luotquantam')"
+              href="#luotquantam"
+              >Lượt quan tâm</a
+            >
           </nav>
         </div>
 
         <div id="work-admin">
           <div id="ql-monan" class="layout-works">
             <h2 class="subtitle">Quản lý món ăn</h2>
-            <button class="btn">Thêm món ăn mới</button>
+            <button class="btn" onclick="showFrm('update-container')">
+              Thêm món ăn mới
+            </button>
             <!--Thiết kế giao diện với 4 dòng, sẽ rót dữ liệu vào sau khi kết nối sql-->
             <table id="table-admin">
               <tr class="record">
@@ -114,27 +188,16 @@
               </tr>
 
               <tr class="record">
-                <td>1</td>
-                <td><img src="" alt="" /></td>
-                <td>Bún bò</td>
-                <td>Món chính</td>
-                <td>30000 VND</td>
-                <td>Còn</td>
+                <td>3</td>
+                <td><img src="images/comtam.png" alt="" /></td>
+                <td><span class="dish-name">Hoa quả</span></td>
+                <td>Tráng miệng</td>
+                <td><span class="dish-price">20000 VND</span></td>
+                <td><span class="badge-status">Còn</span></td>
                 <td id="col-edit">
-                  <button class="btn">sửa</button>
-                  <button class="btn">xóa</button>
-                </td>
-              </tr>
-
-              <tr class="record">
-                <td>2</td>
-                <td><img src="" alt="" /></td>
-                <td>Cơm sườn</td>
-                <td>Món chính</td>
-                <td>30000 VND</td>
-                <td>Còn</td>
-                <td id="col-edit">
-                  <button class="btn">sửa</button>
+                  <button class="btn" onclick="showFrm('update-container')">
+                    sửa
+                  </button>
                   <button class="btn">xóa</button>
                 </td>
               </tr>
@@ -142,12 +205,29 @@
               <tr class="record">
                 <td>3</td>
                 <td><img src="" alt="" /></td>
-                <td>Hoa quả</td>
+                <td><span class="dish-name">Hoa quả</span></td>
                 <td>Tráng miệng</td>
-                <td>20000 VND</td>
-                <td>Còn</td>
+                <td><span class="dish-price">20000 VND</span></td>
+                <td><span class="badge-status">Còn</span></td>
                 <td id="col-edit">
-                  <button class="btn">sửa</button>
+                  <button class="btn" onclick="showFrm('update-container')">
+                    sửa
+                  </button>
+                  <button class="btn">xóa</button>
+                </td>
+              </tr>
+
+              <tr class="record">
+                <td>3</td>
+                <td><img src="" alt="" /></td>
+                <td><span class="dish-name">Hoa quả</span></td>
+                <td>Tráng miệng</td>
+                <td><span class="dish-price">20000 VND</span></td>
+                <td><span class="badge-status">Còn</span></td>
+                <td id="col-edit">
+                  <button class="btn" onclick="showFrm('update-container')">
+                    sửa
+                  </button>
                   <button class="btn">xóa</button>
                 </td>
               </tr>
@@ -156,6 +236,139 @@
 
           <div id="lap-thucdon" class="layout-works">
             <h2 class="subtitle">Lập thực đơn</h2>
+
+            <form id="phanloai" action="">
+              <div id="chonngay">
+                <label class="subtitle" for="chonNgay">Chọn ngày</label>
+                <input type="date" name="chonNgay" id="chonNgay" />
+              </div>
+              <div id="chonbuoi">
+                <p class="subtitle">Chọn buổi</p>
+                <div>
+                  <label for="sang">Sáng</label>
+                  <input
+                    type="radio"
+                    name="buoi"
+                    id="sang"
+                    value="S"
+                    checked
+                    style="display: none"
+                  />
+
+                  <label for="trua">Trưa</label>
+                  <input
+                    type="radio"
+                    name="buoi"
+                    id="trua"
+                    value="T"
+                    style="display: none"
+                  />
+
+                  <label for="chieu">Chiều</label>
+                  <input
+                    type="radio"
+                    name="buoi"
+                    id="chieu"
+                    value="C"
+                    style="display: none"
+                  />
+                </div>
+              </div>
+            </form>
+
+            <div id="chonmon">
+              <div id="danhsachmon" class="danhsach">
+                <h3 class="subtitle-ds">Danh sách các món</h3>
+                <!--Tạo thẻ món ăn-->
+                <div class="container-card">
+                  <div class="card-monan">
+                    <img src="images/comtam.png" alt="Hình ảnh cơm tấm" />
+                    <p class="tenmon">Cơm tấm</p>
+                  </div>
+
+                  <div class="card-monan">
+                    <img src="images/comtam.png" alt="Hình ảnh cơm tấm" />
+                    <p class="tenmon">Cơm tấm</p>
+                  </div>
+
+                  <div class="card-monan">
+                    <img src="images/comtam.png" alt="Hình ảnh cơm tấm" />
+                    <p class="tenmon">Cơm tấm</p>
+                  </div>
+
+                  <div class="card-monan">
+                    <img src="images/comtam.png" alt="Hình ảnh cơm tấm" />
+                    <p class="tenmon">Cơm tấm</p>
+                  </div>
+
+                  <div class="card-monan">
+                    <img src="images/comtam.png" alt="Hình ảnh cơm tấm" />
+                    <p class="tenmon">Cơm tấm</p>
+                  </div>
+
+                  <div class="card-monan">
+                    <img src="images/comtam.png" alt="Hình ảnh cơm tấm" />
+                    <p class="tenmon">Cơm tấm</p>
+                  </div>
+
+                  <div class="card-monan">
+                    <img src="images/comtam.png" alt="Hình ảnh cơm tấm" />
+                    <p class="tenmon">Cơm tấm</p>
+                  </div>
+
+                  <div class="card-monan">
+                    <img src="images/comtam.png" alt="Hình ảnh cơm tấm" />
+                    <p class="tenmon">Cơm tấm</p>
+                  </div>
+
+                  <div class="card-monan">
+                    <img src="images/comtam.png" alt="Hình ảnh cơm tấm" />
+                    <p class="tenmon">Cơm tấm</p>
+                  </div>
+                </div>
+              </div>
+
+              <div id="thaotac">
+                <button class="btn">Thêm</button>
+                <button class="btn">Xóa</button>
+              </div>
+
+              <div id="danhsachchon" class="danhsach">
+                <h3 class="subtitle-ds">Danh sách đã chọn</h3>
+                <!--Tạo thẻ món ăn-->
+                <div class="container-card">
+                  <div class="card-monan">
+                    <img src="images/comtam.png" alt="Hình ảnh cơm tấm" />
+                    <p class="tenmon">Cơm tấm</p>
+                  </div>
+
+                  <div class="card-monan">
+                    <img src="images/comtam.png" alt="Hình ảnh cơm tấm" />
+                    <p class="tenmon">Cơm tấm</p>
+                  </div>
+
+                  <div class="card-monan">
+                    <img src="images/comtam.png" alt="Hình ảnh cơm tấm" />
+                    <p class="tenmon">Cơm tấm</p>
+                  </div>
+
+                  <div class="card-monan">
+                    <img src="images/comtam.png" alt="Hình ảnh cơm tấm" />
+                    <p class="tenmon">Cơm tấm</p>
+                  </div>
+
+                  <div class="card-monan">
+                    <img src="images/comtam.png" alt="Hình ảnh cơm tấm" />
+                    <p class="tenmon">Cơm tấm</p>
+                  </div>
+
+                  <div class="card-monan">
+                    <img src="images/comtam.png" alt="Hình ảnh cơm tấm" />
+                    <p class="tenmon">Cơm tấm</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div id="trangthai" class="layout-works">
@@ -168,5 +381,6 @@
         </div>
       </div>
     </div>
+    <script src="admin.js" type="module"></script>
   </body>
 </html>
