@@ -96,3 +96,24 @@ END
 SELECT *
 FROM ADMINISTRATOR
 GO
+
+INSERT INTO NHOMMON (MaNhom, TenNhom) VALUES ('N01', N'Mon chinh');
+INSERT INTO NHOMMON (MaNhom, TenNhom) VALUES ('N02', N'Mon phu');
+INSERT INTO NHOMMON (MaNhom, TenNhom) VALUES ('N03', N'Trang mieng');
+
+INSERT INTO MONAN(MaMon, TenMon, HinhAnh, MoTa, GiaBan, MaNhom) VALUES ('MA001', N'Com suon', N'images/', N'Com trang, suon heo nuong, rau luoc, canh', 30000, 'N01');
+INSERT INTO MONAN(MaMon, TenMon, HinhAnh, MoTa, GiaBan, MaNhom) VALUES ('MA002', N'Hoa qua got san', N'images/', N'cac loai trai cay theo mua', 50000, 'N03');
+
+---neu chua ton tai record nao co MaMon la MA003 trong bang MONAN thi them moi vao
+if not exists (
+	select * 
+	from MONAN
+	where MaMon = 'MA003'
+)
+begin 
+	insert into MONAN(MaMon, TenMon, HinhAnh, MoTa, GiaBan, MaNhom) values ('MA003', 'Bun thit xao', 'images/bunthit.png', 'Mon an tu bun va thit nuong', 350000, 'N01');
+end
+
+SELECT A.MaMon, A.TenMon, A.HinhAnh, A.GiaBan, B.TenNhom
+FROM MONAN AS A, NHOMMON AS B
+WHERE A.MaNhom = B.MaNhom

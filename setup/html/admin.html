@@ -16,56 +16,6 @@
           window.location.href = "login.html";
         }
       })();
-
-      function logoutforAdmin() {
-        if (confirm("Bạn có chắc chắn muốn kết thúc phiên làm việc này?")) {
-          sessionStorage.clear();
-          window.location.href = "login.html";
-        }
-      }
-
-      let currentElement = document.getElementById("ql-monan");
-
-      function showElementById(id) {
-        // Ẩn phần tử cũ nếu có
-        if (currentElement) {
-          currentElement.style.display = "none";
-        }
-
-        // Hiển thị phần tử mới
-        const element = document.getElementById(id);
-        if (element) {
-          element.style.display = "block";
-          currentElement = element; // Cập nhật phần tử hiện đang hiển thị
-        }
-      }
-
-      function showElement(classElement, id) {
-        const elements = document.getElementsByClassName(classElement);
-
-        for (let i = 0; i < elements.length; i++) {
-          elements[i].style.display = "none";
-        }
-
-        const targetElement = document.getElementById(id);
-
-        if (targetElement) {
-          targetElement.style.display = "block";
-          currentElement = targetElement;
-        }
-      }
-      document.addEventListener("DOMContentLoaded", function () {
-        showElement("layout-works", "ql-monan");
-      });
-
-      function showFrm(id) {
-        const element = document.getElementById(id);
-        element.style.display = "flex";
-      }
-      function hideFrm(id) {
-        const element = document.getElementById(id);
-        element.style.display = "none";
-      }
     </script>
   </head>
 
@@ -91,19 +41,31 @@
         <div id="update-container">
           <div id="update-monan">
             <div id="update-header">
-              <h3>Thêm/sửa món ăn</h3>
+              <h3>
+                <i class="ti-pencil-alt"></i>
+                Thêm/sửa món ăn
+              </h3>
               <div id="header-close" onclick="hideFrm('update-container')">
                 <i class="ti-close btn"></i>
               </div>
             </div>
 
             <div id="update-content">
+              <div id="Error-message" class="alert-Error" style="display: none">
+                dòng thông báo lỗi ở đây
+              </div>
               <form id="frm-update">
                 <label for="tenmon"> Tên món </label>
-                <input type="text" name="tenmon" id="tenmon" />
+                <input type="text" name="tenmon" id="tenmon" class="text-box" />
 
                 <label for="nhommon"> Nhóm món </label>
-                <input type="text" name="nhommon" id="nhommon" list="Nhommon" />
+                <input
+                  type="text"
+                  name="nhommon"
+                  id="nhommon"
+                  list="Nhommon"
+                  class="text-box"
+                />
                 <datalist id="Nhommon">
                   <option value="Món chính"></option>
                   <option value="Món phụ"></option>
@@ -112,24 +74,35 @@
                 </datalist>
 
                 <label for="giaban"> Giá bán </label>
-                <input type="text" name="giaban" id="giaban" />
+                <input type="text" name="giaban" id="giaban" class="text-box" />
 
                 <label for="mota"> Mô tả </label>
-                <input type="text" name="mota" id="mota" />
+                <input type="text" name="mota" id="mota" class="text-box" />
 
                 <label for="hinhanh"> Hình ảnh </label>
-                <input type="text" name="hinhanh" id="hinhanh" />
+                <input
+                  type="text"
+                  name="hinhanh"
+                  id="hinhanh"
+                  class="text-box"
+                />
+
+                <div id="update-footer">
+                  <button
+                    class="btn"
+                    id="btn-space"
+                    onclick="hideFrm('update-container')"
+                  >
+                    Hủy bỏ
+                  </button>
+                  <input
+                    type="submit"
+                    class="btn"
+                    value="Lưu món ăn"
+                    onclick="themMonan()"
+                  />
+                </div>
               </form>
-              <div id="update-footer">
-                <button
-                  class="btn"
-                  id="btn-space"
-                  onclick="hideFrm('update-container')"
-                >
-                  Hủy bỏ
-                </button>
-                <input type="submit" class="btn" value="Lưu món ăn" />
-              </div>
             </div>
           </div>
         </div>
@@ -177,60 +150,64 @@
             </button>
             <!--Thiết kế giao diện với 4 dòng, sẽ rót dữ liệu vào sau khi kết nối sql-->
             <table id="table-admin">
-              <tr class="record">
-                <th>STT</th>
-                <th>Hình ảnh</th>
-                <th>Tên món</th>
-                <th>Nhóm món</th>
-                <th>Giá bán</th>
-                <th>Trạng thái</th>
-                <th>Thao tác</th>
-              </tr>
+              <thead>
+                <tr class="record">
+                  <th>STT</th>
+                  <th>Hình ảnh</th>
+                  <th>Tên món</th>
+                  <th>Nhóm món</th>
+                  <th>Giá bán</th>
+                  <th>Trạng thái</th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
 
-              <tr class="record">
-                <td>3</td>
-                <td><img src="images/comtam.png" alt="" /></td>
-                <td><span class="dish-name">Hoa quả</span></td>
-                <td>Tráng miệng</td>
-                <td><span class="dish-price">20000 VND</span></td>
-                <td><span class="badge-status">Còn</span></td>
-                <td id="col-edit">
-                  <button class="btn" onclick="showFrm('update-container')">
-                    sửa
-                  </button>
-                  <button class="btn">xóa</button>
-                </td>
-              </tr>
+              <tbody id="table-monan">
+                <tr class="record">
+                  <td>3</td>
+                  <td><img src="images/comtam.png" alt="" /></td>
+                  <td><span class="dish-name">Hoa quả</span></td>
+                  <td>Tráng miệng</td>
+                  <td><span class="dish-price">20000 VND</span></td>
+                  <td><span class="badge-status runout-status">Hết</span></td>
+                  <td id="col-edit">
+                    <button class="btn" onclick="showFrm('update-container')">
+                      sửa
+                    </button>
+                    <button class="btn">xóa</button>
+                  </td>
+                </tr>
 
-              <tr class="record">
-                <td>3</td>
-                <td><img src="" alt="" /></td>
-                <td><span class="dish-name">Hoa quả</span></td>
-                <td>Tráng miệng</td>
-                <td><span class="dish-price">20000 VND</span></td>
-                <td><span class="badge-status">Còn</span></td>
-                <td id="col-edit">
-                  <button class="btn" onclick="showFrm('update-container')">
-                    sửa
-                  </button>
-                  <button class="btn">xóa</button>
-                </td>
-              </tr>
+                <tr class="record">
+                  <td>3</td>
+                  <td><img src="" alt="" /></td>
+                  <td><span class="dish-name">Hoa quả</span></td>
+                  <td>Tráng miệng</td>
+                  <td><span class="dish-price">20000 VND</span></td>
+                  <td><span class="badge-status stock-status">Còn</span></td>
+                  <td id="col-edit">
+                    <button class="btn" onclick="showFrm('update-container')">
+                      sửa
+                    </button>
+                    <button class="btn">xóa</button>
+                  </td>
+                </tr>
 
-              <tr class="record">
-                <td>3</td>
-                <td><img src="" alt="" /></td>
-                <td><span class="dish-name">Hoa quả</span></td>
-                <td>Tráng miệng</td>
-                <td><span class="dish-price">20000 VND</span></td>
-                <td><span class="badge-status">Còn</span></td>
-                <td id="col-edit">
-                  <button class="btn" onclick="showFrm('update-container')">
-                    sửa
-                  </button>
-                  <button class="btn">xóa</button>
-                </td>
-              </tr>
+                <tr class="record">
+                  <td>3</td>
+                  <td><img src="" alt="" /></td>
+                  <td><span class="dish-name">Hoa quả</span></td>
+                  <td>Tráng miệng</td>
+                  <td><span class="dish-price">20000 VND</span></td>
+                  <td><span class="badge-status stock-status">Còn</span></td>
+                  <td id="col-edit">
+                    <button class="btn" onclick="showFrm('update-container')">
+                      sửa
+                    </button>
+                    <button class="btn">xóa</button>
+                  </td>
+                </tr>
+              </tbody>
             </table>
           </div>
 

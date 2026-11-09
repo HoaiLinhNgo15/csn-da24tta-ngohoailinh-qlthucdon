@@ -61,29 +61,81 @@ app.post("/api/login", async (req, res) => {
         message: "Tài khoản hoặc mật khẩu không chính xác!",
       });
     }
-  } catch(err) {
+  } catch (err) {
     console.error("CHI TIẾT LỖI TẠI API LOGIN:", err);
     res.status(500).json({ success: false, message: "Lỗi kết nối server!" });
   }
 });
 
-app.post("/api/admin", async (req, res) => {
-  try{
+//API TẠO DỮ LIỆU - CREATE
+app.post("/api/monan", async (req, res) => {
+  try {
+    //nhận dữ liệu yêu cầu req
+    const { tenMon, hinhAnh, moTa, giaBan, maNhom } = req.body;
+
+    //Kiểm tra các dữ liệu bắt buộc
+    if (!tenMon || !giaBan || !maNhom) {
+      return res.status(400).json({
+        success: false,
+        message: "Vui lòng nhập đầy đủ thông tin!",
+      });
+    }
+
+    const pool = await getConnection();
+
+    //cập nhật mã món mới nhất
+    const checkId = await pool
+      .request()
+      .query("SELECT TOP 1 MaMon FROM MONAN ORDER BY MaMon DESC");
+
+    let nextMaMon = "MA001";
+    if (checkId.recordset.length > 0) {
+      const currentMaxId = checkId.recordset[0].MaMon;
+      const numPart = parseInt(currentMaxId.replace("MA", "")) + 1;
+      nextMaMon = "MA" + String(numPart).padStart(3, "0");
+    }
+
+    await pool
+      .request()
+      .input("MaMon", sql.VarChar(10), nextMaMon)
+      .input("TenMon", sql.NVarChar(100), tenMon)
+      .input("HinhAnh", sql.NVarChar(50), hinhAnh)
+      .input("MoTa", sql.NVarChar(255), moTa)
+      .input("GiaBan", sql.Decimal(18, 2), giaBan)
+      .input("MaNhom", sql.VarChar(10), maNhom)
+      .query(
+        `INSERT INTO MONAN (MaMon, TenMon, HinhAnh, MoTa, GiaBan, MaNhom) VALUES (@MaMon, @TenMon, @HinhAnh, @MoTa, @GiaBan, @MaNhom)`,
+      );
+
+    return res.json({
+      success: true,
+      message: `Thêm món ăn thành công với mã ${nextMaMon}!`,
+    });
+  } catch (err) {
+    console.error("Lỗi khi thêm món: ", err);
+    res.status(500).json({
+      success: false,
+      message: "Lỗi server: " + err.message,
+    });
+  }
+});
+
+// API đọc dữ liệu - READ
+app.get("/api/admin", async (req, res) => {
+  try {
     const pool = await getConnection();
 
     const results = await pool
-          .request()
-          .query("SELECT A.MaMon, A.TenMon, A.HinhAnh, A.GiaBan, B.TenNhom FROM MONAN AS A, NHOMMON AS B WHERE A.MaNhom = B.MaNhom");
-    
-    if (results.recordset.length === 0) {
-      return res.status(401).json({
-        success: false,
-        message: "Không thể truy xuất dữ liệu từ câu lệnh select",
-      });
-    }
-    return res.json(results.recordset);
-  }
-  catch(err) {
+      .request()
+      .query(
+        "SELECT A.MaMon, A.TenMon, A.HinhAnh, A.GiaBan, B.TenNhom FROM MONAN AS A, NHOMMON AS B WHERE A.MaNhom = B.MaNhom",
+      );
+
+    return res.json({
+      success: true,
+      data: results.recordset,
+    });
+  } catch (err) {
     console.error("CHI TIẾT LỖI TẠI API LOGIN:", err);
     res.status(500).json({ success: false, message: "Lỗi kết nối server!" });
   }
