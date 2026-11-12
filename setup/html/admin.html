@@ -97,9 +97,10 @@
                   </button>
                   <input
                     type="submit"
+                    id="submit-frm"
                     class="btn"
                     value="Lưu món ăn"
-                    onclick="themMonan()"
+                    onclick="capnhatMonAn()"
                   />
                 </div>
               </form>
@@ -145,14 +146,18 @@
         <div id="work-admin">
           <div id="ql-monan" class="layout-works">
             <h2 class="subtitle">Quản lý món ăn</h2>
-            <button class="btn" onclick="showFrm('update-container')">
+            <button
+              class="btn"
+              id="addmon"
+              onclick="showFrm('update-container')"
+            >
               Thêm món ăn mới
             </button>
             <!--Thiết kế giao diện với 4 dòng, sẽ rót dữ liệu vào sau khi kết nối sql-->
             <table id="table-admin">
               <thead>
                 <tr class="record">
-                  <th>STT</th>
+                  <th>Mã món</th>
                   <th>Hình ảnh</th>
                   <th>Tên món</th>
                   <th>Nhóm món</th>
@@ -163,50 +168,53 @@
               </thead>
 
               <tbody id="table-monan">
+                <!--
+                
                 <tr class="record">
-                  <td>3</td>
+                  <td id="dish-id">MA00x</td>
                   <td><img src="images/comtam.png" alt="" /></td>
                   <td><span class="dish-name">Hoa quả</span></td>
                   <td>Tráng miệng</td>
                   <td><span class="dish-price">20000 VND</span></td>
                   <td><span class="badge-status runout-status">Hết</span></td>
                   <td id="col-edit">
-                    <button class="btn" onclick="showFrm('update-container')">
-                      sửa
-                    </button>
+                    <button class="btn" onclick="chuanbiForm()">sửa</button>
                     <button class="btn">xóa</button>
                   </td>
                 </tr>
 
                 <tr class="record">
-                  <td>3</td>
+                  <td id="dish-id">MA00x</td>
                   <td><img src="" alt="" /></td>
                   <td><span class="dish-name">Hoa quả</span></td>
                   <td>Tráng miệng</td>
                   <td><span class="dish-price">20000 VND</span></td>
                   <td><span class="badge-status stock-status">Còn</span></td>
                   <td id="col-edit">
-                    <button class="btn" onclick="showFrm('update-container')">
-                      sửa
-                    </button>
+                    <button class="btn" onclick="chuanbiForm()">sửa</button>
                     <button class="btn">xóa</button>
                   </td>
                 </tr>
 
                 <tr class="record">
-                  <td>3</td>
+                  <td id="dish-id">MA00x</td>
                   <td><img src="" alt="" /></td>
                   <td><span class="dish-name">Hoa quả</span></td>
                   <td>Tráng miệng</td>
                   <td><span class="dish-price">20000 VND</span></td>
                   <td><span class="badge-status stock-status">Còn</span></td>
                   <td id="col-edit">
-                    <button class="btn" onclick="showFrm('update-container')">
+                    <button
+                      class="btn"
+                      id="updatemon"
+                      onclick="showFrm('update-container')"
+                    >
                       sửa
                     </button>
                     <button class="btn">xóa</button>
                   </td>
                 </tr>
+                -->
               </tbody>
             </table>
           </div>

@@ -11,7 +11,7 @@ IF NOT EXISTS (
 )
 BEGIN
 CREATE TABLE NHOMMON (
-	MaNhom char(3) primary key not null,
+	MaNhom VARCHAR(10) primary key not null,
 	TenNhom nvarchar(100) not null
 );
 END
@@ -24,12 +24,12 @@ IF NOT EXISTS (
 )
 BEGIN
 CREATE TABLE MONAN (
-	MaMon CHAR(5) PRIMARY KEY NOT NULL,
+	MaMon VARCHAR(10) PRIMARY KEY NOT NULL,
 	TenMon NVARCHAR(100) not null,
 	HinhAnh NVARCHAR(50) not null,
 	MoTa NVARCHAR(MAX),
 	GiaBan decimal(18,2) not null,
-	MaNhom char(3) FOREIGN KEY REFERENCES NHOMMON(MaNhom)
+	MaNhom VARCHAR(10) FOREIGN KEY REFERENCES NHOMMON(MaNhom)
 );
 END
 GO
@@ -41,7 +41,7 @@ IF NOT EXISTS (
 )
 BEGIN
 CREATE TABLE TD_BUOI (
-	MaBuoi Char(3) primary key not null,
+	MaBuoi VARCHAR(10) primary key not null,
 	TenBuoi nvarchar(100)
 );
 END
@@ -54,10 +54,10 @@ IF NOT EXISTS (
 )
 BEGIN
 CREATE TABLE CHI_TIET_THUC_DON (
-	MaChiTiet Char(4) primary key not null,
+	MaChiTiet VARCHAR(10) primary key not null,
 	NgayPhucVu datetime,
-	MaMon Char(5) foreign key references MONAN(MaMon),
-	MaBuoi char(3) foreign key references TD_BUOI(MaBuoi),
+	MaMon VARCHAR(10) foreign key references MONAN(MaMon),
+	MaBuoi VARCHAR(10) foreign key references TD_BUOI(MaBuoi),
 	TrangThai int,
 	LuotQuanTam int
 );
@@ -115,5 +115,9 @@ begin
 end
 
 SELECT A.MaMon, A.TenMon, A.HinhAnh, A.GiaBan, B.TenNhom
-FROM MONAN AS A, NHOMMON AS B
-WHERE A.MaNhom = B.MaNhom
+FROM MONAN AS A
+JOIN NHOMMON AS B ON A.MaNhom = B.MaNhom
+
+SELECT TOP 1 MaMon FROM MONAN ORDER BY MaMon DESC
+
+SELECT A.MaMon, A.TenMon, A.HinhAnh, A.MoTa, A.GiaBan, B.TenNhom FROM MONAN AS A JOIN NHOMMON AS B ON A.MaNhom = B.MaNhom WHERE A.MaMon = 'MA002'

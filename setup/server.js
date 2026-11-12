@@ -68,7 +68,7 @@ app.post("/api/login", async (req, res) => {
 });
 
 //API TẠO DỮ LIỆU - CREATE
-app.post("/api/monan", async (req, res) => {
+app.post("/api/createmonan", async (req, res) => {
   try {
     //nhận dữ liệu yêu cầu req
     const { tenMon, hinhAnh, moTa, giaBan, maNhom } = req.body;
@@ -128,7 +128,7 @@ app.get("/api/admin", async (req, res) => {
     const results = await pool
       .request()
       .query(
-        "SELECT A.MaMon, A.TenMon, A.HinhAnh, A.GiaBan, B.TenNhom FROM MONAN AS A, NHOMMON AS B WHERE A.MaNhom = B.MaNhom",
+        "SELECT A.MaMon, A.TenMon, A.HinhAnh, A.GiaBan, A.MoTa, A.MaNhom, B.TenNhom FROM MONAN AS A, NHOMMON AS B WHERE A.MaNhom = B.MaNhom",
       );
 
     return res.json({
@@ -140,6 +140,74 @@ app.get("/api/admin", async (req, res) => {
     res.status(500).json({ success: false, message: "Lỗi kết nối server!" });
   }
 });
+
+// API cập nhật dữ liệu
+app.put("/api/monan/:maMon", async (req, res) => {
+  try {
+    const { maMon } = req.params;
+    const { tenMon, giaBan, moTa, hinhAnh, maNhom } = req.body;
+
+    if (!tenMon || !maNhom || !giaBan) {
+      return res.status(400).json({
+        success: false,
+        message: "Vui lòng nhập đầy đủ thông tin!!",
+      });
+    }
+
+    const pool = await getConnection();
+
+    await pool
+      .request()
+      .input("MaMon", sql.VarChar(10), maMon)
+      .input("TenMon", sql.NVarChar(100), tenMon)
+      .input("GiaBan", sql.Decimal(18, 2), giaBan)
+      .input("HinhAnh", sql.NVarChar(100), hinhAnh)
+      .input("MoTa", sql.NVarChar(100), moTa)
+      .input("MaNhom", sql.VarChar(10), maNhom).query(`
+        UPDATE MONAN
+        SET TenMon = @TenMon, GiaBan = @GiaBan, HinhAnh = @HinhAnh, MoTa = @MoTa, MaNhom = @MaNhom
+        WHERE MaMon = @MaMon
+        `);
+
+    return res.json({
+      success: true,
+      message: `Cập nhật món ăn có mã ${maMon} thành công!`,
+    });
+  } catch (err) {
+    Console.error("Lỗi khi cập nhật món ăn: ", err);
+    res.status(500).json({
+      success: false,
+      message: "Lỗi server: " + err,
+    });
+  }
+});
+
+/*
+app.get("/api/showmonan", async (req, res) => {
+  const { Mamon } = req.body;
+  try {
+    const pool = await getConnection();
+
+    const results = await pool
+      .request()
+      .input(Mamon, sql.VarChar(), Mamon)
+      .query(
+        "SELECT A.MaMon, A.TenMon, A.HinhAnh, A.MoTa, A.GiaBan, A.MoTa, B.TenNhom FROM MONAN AS A JOIN NHOMMON AS B ON A.MaNhom = B.MaNhom WHERE A.MaMon = @Mamon",
+      );
+
+    return res.json({
+      success: true,
+      data: results.recordset,
+    });
+  } catch (err) {
+    Console.error("Lỗi kết nối: ", err);
+    return res.status(500).json({
+      success: false,
+      message: "Lỗi server: " + err,
+    });
+  }
+});
+*/
 
 app.get("/", (req, res) => {
   res.send("Chào mừng bạn đến với hệ thống Quản lý Canteen!");
