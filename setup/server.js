@@ -182,6 +182,31 @@ app.put("/api/monan/:maMon", async (req, res) => {
   }
 });
 
+//api xóa món ăn
+app.delete("/api/monan/:maMon", async (req, res) => {
+  try {
+    const { maMon } = req.params;
+
+    const pool = await getConnection();
+
+    await pool
+      .request()
+      .input("MaMon", sql.VarChar(10), maMon)
+      .query("DELETE FROM MONAN WHERE MaMon = @MaMon");
+
+    return res.json({
+      success: true,
+      message: `Đã xóa thành công món ăn có mã ${maMon}`,
+    });
+  } catch (err) {
+    console.error("Lỗi khi xóa món ăn: ", err);
+    res.status(500).json({
+      success: false,
+      message: "Lỗi server: " + err.message,
+    });
+  }
+});
+
 /*
 app.get("/api/showmonan", async (req, res) => {
   const { Mamon } = req.body;

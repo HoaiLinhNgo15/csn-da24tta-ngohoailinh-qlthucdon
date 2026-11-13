@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 //Viết CRUD cho trang Admin
-//CREATE
+//CREATE & UPDATE
 
 let currentEditId = null;
 //hàm lấy dữ liệu lên form
@@ -210,6 +210,9 @@ async function loadTableData() {
         btn2.setAttribute("class", "btn");
         btn2.textContent = "Xóa";
         //bổ sung sự kiện xóa vào đây--------------------------------
+        btn2.addEventListener("click", () => {
+          xoaMonAn(item.MaMon);
+        });
 
         colTT.appendChild(btn1);
         colTT.appendChild(btn2);
@@ -223,6 +226,34 @@ async function loadTableData() {
     }
   } catch (err) {
     console.error("Lỗi kêt nối: ", err);
+  }
+}
+
+// DELETE
+async function xoaMonAn(maMon) {
+  if (!confirm(`Bạn có chắc muốn xóa món ăn có mã ${maMon} không?`)) {
+    return;
+  }
+
+  try {
+    const response = await fetch(`http://localhost:3002/api/monan/${maMon}`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    const results = await response.json();
+
+    if (results.success) {
+      alert(results.message);
+      if (typeof loadTableData === "function") {
+        loadTableData();
+      }
+    } else {
+      alert(results.message || "Xóa thất bại!");
+    }
+  } catch (err) {
+    console.error("Lỗi kết nối server!", err);
+    alert("Không thể kết nối đến server!");
   }
 }
 
