@@ -112,7 +112,7 @@
   flex-direction: column;
   gap: 6px;
   border-radius: 16px;
-  background-color: #cbd5e1;
+  background-color: #f4f9ff;
   padding: 12px;
   margin-top: 12px;
   box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.1);
@@ -224,9 +224,89 @@ tr:hover td {
 }
 
 #col-edit .btn {
-  min-width: 40px;
+  min-width: 46px;
   width: 62px;
   margin: 0;
+}
+
+#quanlyadmin {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9;
+}
+
+#containerUser {
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  border-radius: 16px;
+}
+
+#header-qladmin {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 16px;
+  align-items: center;
+  background-color: var(--accent-main);
+  border-radius: 16px 16px 0 0;
+  height: 64px;
+  padding: 24px;
+}
+
+#header-qladmin h3 {
+  min-width: 280px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+#header-close .btn {
+  border-radius: 8px;
+}
+
+#error-admin {
+  padding: 0 24px;
+}
+
+#frm-quanlyadmin {
+  display: flex;
+  flex-direction: column;
+  font-size: 20px;
+  padding: 24px;
+}
+
+#frm-quanlyadmin label {
+  margin-bottom: 12px;
+}
+
+#frm-quanlyadmin .txt-box {
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 14pt;
+  background-color: #f8fafc;
+  outline: none;
+  margin-bottom: 12px;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+#frm-quanlyadmin .txt-box:focus {
+  background-color: #fff;
+  border-color: var(--accent-main);
+  box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.1);
+}
+
+#frm-quanlyadmin .btn {
+  margin-top: 24px;
+  width: 100%;
+  border-radius: 12px;
 }
 
 #update-container {
@@ -320,6 +400,13 @@ tr:hover td {
   border-color: var(--accent-main);
   box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.1);
 }
+#preview-anh {
+  display: none;
+  height: 60px;
+  width: 60px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
 
 #update-footer {
   display: flex;
@@ -354,7 +441,6 @@ tr:hover td {
   justify-content: center;
   align-items: center;
   text-align: center;
-  background-color: var(--accent-main);
   padding: 12px;
   border-radius: 16px;
   width: fit-content;
@@ -402,13 +488,37 @@ tr:hover td {
   font-weight: 500;
 }
 
-#chonbuoi label:hover {
-  background-color: var(--btn-hover);
-  color: var(--color-hover);
+/* ẩn input radio gốc */
+.buoi-item input[type="radio"] {
+  display: none;
 }
-#chonbuoi label:active {
-  background-color: var(--bg-active);
-  color: var(--color-hover);
+
+/* Định dạng mặc định */
+.buoi-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 24px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #ffffff;
+  color: #666;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+  user-select: none;
+}
+
+.buoi-item:hover {
+  border-color: #ff7a00;
+  color: #ff7a00;
+}
+
+.buoi-item:has(input[type="radio"]:checked) {
+  background-color: #ff7a00; /* Nền màu cam chủ đạo */
+  border-color: #ff7a00; /* Viền màu cam */
+  color: #ffffff; /* Chữ trắng nổi bật */
+  box-shadow: 0 4px 10px rgba(255, 122, 0, 0.3); /* Hiệu ứng tỏa sáng nhẹ */
 }
 
 #chonmon {
@@ -424,19 +534,23 @@ tr:hover td {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding: 12px;
 }
 
 .subtitle-ds {
   text-align: center;
   width: 100%;
+  font-weight: 500;
 }
 .container-card {
   display: flex;
-  justify-content: space-between;
   flex-wrap: wrap;
   gap: 12px;
   width: 436px;
   padding: 24px;
+  background-color: #f3f3f3;
+  border-radius: 16px;
+  margin-top: 12px;
 }
 
 .card-monan {
@@ -447,10 +561,12 @@ tr:hover td {
   border-radius: 16px;
   border: 1px solid #cbd5e1;
   flex: 0 0 calc(33.333% - 12px);
+  min-height: 140px;
 }
 
 .card-monan img {
   width: 92px;
+  height: 78.5px;
   margin-bottom: 8px;
 }
 
@@ -467,5 +583,42 @@ tr:hover td {
   height: 250px;
 }
 
+/* Thẻ món ăn bên trái khi ĐÃ ĐƯỢC CHỌN */
+.card-monan.selected {
+  border: 2px solid var(--accent-main); /* Viền màu Cam #F97316 */
+  background-color: #fff7ed; /* Nền màu ngả cam nhạt \*/
+  opacity: 0.65;
+}
+.card-monan.selected .btn-add {
+  background-color: #94a3b8; /* Đổi nút thành màu xám \*/
+  pointer-events: none; /* Khóa không cho click tiếp \*/
+}
+
+.card-monan:hover {
+  cursor: pointer;
+}
+
 #danhsachchon {
+}
+
+#quanly-user .btn {
+  min-width: 260px;
+  margin-bottom: 12px;
+}
+
+#table-user .btn {
+  min-width: 40px;
+  width: 62px;
+  margin: 0;
+}
+
+#table-user #col-edit .btn {
+  min-width: 56px;
+  width: 68px;
+  margin: 0;
+}
+
+#table-account td {
+  color: #000;
+  font-weight: 500;
 }

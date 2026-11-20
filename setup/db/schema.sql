@@ -1,4 +1,4 @@
-CREATE DATABASE QUANLYTHUCDON
+﻿CREATE DATABASE QUANLYTHUCDON
 GO
 
 USE QUANLYTHUCDON
@@ -26,7 +26,7 @@ BEGIN
 CREATE TABLE MONAN (
 	MaMon VARCHAR(10) PRIMARY KEY NOT NULL,
 	TenMon NVARCHAR(100) not null,
-	HinhAnh NVARCHAR(50) not null,
+	HinhAnh NVARCHAR(255) not null,
 	MoTa NVARCHAR(MAX),
 	GiaBan decimal(18,2) not null,
 	MaNhom VARCHAR(10) FOREIGN KEY REFERENCES NHOMMON(MaNhom)
@@ -58,8 +58,8 @@ CREATE TABLE CHI_TIET_THUC_DON (
 	NgayPhucVu datetime,
 	MaMon VARCHAR(10) foreign key references MONAN(MaMon),
 	MaBuoi VARCHAR(10) foreign key references TD_BUOI(MaBuoi),
-	TrangThai int,
-	LuotQuanTam int
+	TrangThai BIT Not Null default 1,
+	LuotQuanTam int default 0
 );
 END
 GO
@@ -72,8 +72,8 @@ IF NOT EXISTS(
 BEGIN
 CREATE TABLE ADMINISTRATOR(
 	MaAdmin INT IDENTITY(1,1) primary key,
-	TenDangNhap nvarchar(50) not null unique,
-	MatKhau nvarchar(255) not null,
+	TenDangNhap varchar(50) not null unique,
+	MatKhau varchar(255)not null,
 	HoTen nvarchar(100) not null,
 	Email nvarchar(100) null,
 	Sodienthoai nvarchar(10) null,
@@ -90,16 +90,35 @@ IF NOT EXISTS (
 	WHERE TenDangNhap = 'admin'
 ) 
 BEGIN 
-	INSERT INTO ADMINISTRATOR (TenDangNhap, MatKhau, HoTen, Email, Trangthai) VALUES ('admin', 'admin123', N'Ng� Ho�i Linh (Admin)', 'admin@cantin.edu.vn', 1); 
+	INSERT INTO ADMINISTRATOR (TenDangNhap, MatKhau, HoTen, Email, Trangthai) VALUES ('admin', 'admin123', N'Ngô Hoài Linh (Admin)', 'admin@cantin.edu.vn', 1); 
 END
 
 SELECT *
 FROM ADMINISTRATOR
 GO
 
+UPDATE ADMINISTRATOR SET Trangthai = 1 WHERE MaAdmin = 2
+
+IF NOT EXISTS (
+	SELECT * 
+	FROM ADMINISTRATOR 
+	WHERE TenDangNhap = 'admin1'
+)
+BEGIN 
+	INSERT INTO ADMINISTRATOR (TenDangNhap, MatKhau, HoTen, Email, Trangthai) VALUES ('admin1', 'admin123', N'Quản trị viên 1', 'admin1@cantin.edu.vn', 1); 
+END
+GO 
+
 INSERT INTO NHOMMON (MaNhom, TenNhom) VALUES ('N01', N'Mon chinh');
 INSERT INTO NHOMMON (MaNhom, TenNhom) VALUES ('N02', N'Mon phu');
 INSERT INTO NHOMMON (MaNhom, TenNhom) VALUES ('N03', N'Trang mieng');
+INSERT INTO NHOMMON (MaNhom, TenNhom) VALUES ('N04', N'Thuc uong');
+
+update NHOMMON 
+SET TenNhom = N'Món chính'
+where MaNhom = 'N01'
+
+select * from NHOMMON
 
 INSERT INTO MONAN(MaMon, TenMon, HinhAnh, MoTa, GiaBan, MaNhom) VALUES ('MA001', N'Com suon', N'images/', N'Com trang, suon heo nuong, rau luoc, canh', 30000, 'N01');
 INSERT INTO MONAN(MaMon, TenMon, HinhAnh, MoTa, GiaBan, MaNhom) VALUES ('MA002', N'Hoa qua got san', N'images/', N'cac loai trai cay theo mua', 50000, 'N03');
@@ -114,6 +133,19 @@ begin
 	insert into MONAN(MaMon, TenMon, HinhAnh, MoTa, GiaBan, MaNhom) values ('MA003', 'Bun thit xao', 'images/bunthit.png', 'Mon an tu bun va thit nuong', 350000, 'N01');
 end
 
+ALTER TABLE MONAN
+ALTER COLUMN HinhAnh NVARCHAR(255) NOT NULL;
+
+INSERT INTO TD_BUOI (MaBuoi, TenBuoi) VALUES ('B01', N'Sáng');
+INSERT INTO TD_BUOI (MaBuoi, TenBuoi) VALUES ('B02', N'Trưa');
+INSERT INTO TD_BUOI (MaBuoi, TenBuoi) VALUES ('B03', N'Chiều');
+
+INSERT INTO CHI_TIET_THUC_DON (MaChiTiet, MaMon, NgayPhucVu, MaBuoi) VALUES ('CT001', 'MA001', '11/14/2026', 'B01');
+
+SELECT A.MaChiTiet, A.MaMon, B.TenMon, B.GiaBan, B.HinhAnh, A.NgayPhucVu, A.MaBuoi, C.TenBuoi, A.TrangThai, A.LuotQuanTam
+FROM CHI_TIET_THUC_DON AS A, MONAN AS B, TD_BUOI AS C
+WHERE A.MaMon = B.MaMon AND A.MaBuoi = C.MaBuoi
+
 SELECT A.MaMon, A.TenMon, A.HinhAnh, A.GiaBan, B.TenNhom
 FROM MONAN AS A
 JOIN NHOMMON AS B ON A.MaNhom = B.MaNhom
@@ -121,3 +153,9 @@ JOIN NHOMMON AS B ON A.MaNhom = B.MaNhom
 SELECT TOP 1 MaMon FROM MONAN ORDER BY MaMon DESC
 
 SELECT A.MaMon, A.TenMon, A.HinhAnh, A.MoTa, A.GiaBan, B.TenNhom FROM MONAN AS A JOIN NHOMMON AS B ON A.MaNhom = B.MaNhom WHERE A.MaMon = 'MA002'
+
+SELECT TOP 1 MaMon 
+FROM MONAN 
+ORDER BY CAST(SUBSTRING(MaMon, 3, LEN(MaMon)) AS INT) DESC;
+
+SELECT MAX(CAST(SUBSTRING(MaMon, 3, LEN(MaMon)) AS INT)) FROM MONAN;
