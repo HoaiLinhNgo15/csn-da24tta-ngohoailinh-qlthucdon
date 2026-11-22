@@ -748,3 +748,78 @@ input:checked + .slider::before {
 .slider.round:before {
   border-radius: 50%;
 }
+#luotquantam {
+  background-color: #fffaf5;
+}
+
+#thongke-luotthich {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 20px;
+  font-size: 18px;
+  width: 100%;
+  justify-content: space-between;
+  padding: 24px;
+  min-width: 1132px;
+}
+
+.solieuthanhphan {
+  display: flex;
+  background-color: #fff;
+  gap: 12px;
+  padding: 12px;
+  background-color: #fff;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.05);
+  border-radius: 16px;
+  align-items: center;
+  width: 400px;
+}
+
+.solieuthanhphan img {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+}
+
+.solieuthanhphan p {
+  text-transform: capitalize;
+  font-weight: 500;
+  color: #5b5b5b;
+  line-height: 32px;
+}
+
+.solieuthanhphan span {
+  font-weight: 600;
+  font-size: 24px;
+  color: #000;
+}
+
+#bieudo-luotthich {
+  width: 100%;
+  padding: 24px;
+  background-color: #fff;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+}
+
+#bieudo-luotthich p {
+  text-transform: capitalize;
+  font-size: 24px;
+  font-weight: 600;
+  color: #000;
+}
+
+#bangxephang {
+  width: 100%;
+  padding: 24px;
+  background-color: #fff;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+}
+
+#bangxephang p {
+  text-transform: capitalize;
+  font-size: 24px;
+  font-weight: 600;
+  color: #000;
+}

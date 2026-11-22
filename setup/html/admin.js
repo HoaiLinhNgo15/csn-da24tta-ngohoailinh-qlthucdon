@@ -83,6 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
   createNewAdmin();
   tai_ChiTietThucDon();
   tai_TrangThaiMonAn();
+  lay_DanhSachLuotQuanTam();
 });
 //------------------------------------------------------------------------------
 
@@ -239,6 +240,10 @@ export function capnhatMonAn() {
         if (typeof loadDataList == "function") {
           loadDataList();
         }
+        if (typeof tai_TrangThaiMonAn === "function") tai_TrangThaiMonAn();
+        if (typeof lay_DanhSachLuotQuanTam === "function") {
+          lay_DanhSachLuotQuanTam();
+        }
       } else {
         showError(results.message || "Thêm món ăn thất bại!!");
       }
@@ -389,8 +394,9 @@ async function xoaMonAn(maMon, tenMon = "") {
         tai_ChiTietThucDon();
       }
       if (typeof loadDataList === "function") loadDataList();
-      if (typeof tai_TrangThaiMonAn === "function") {
-        tai_TrangThaiMonAn();
+      if (typeof tai_TrangThaiMonAn === "function") tai_TrangThaiMonAn();
+      if (typeof lay_DanhSachLuotQuanTam === "function") {
+        lay_DanhSachLuotQuanTam();
       }
     } else {
       alert(results.message || "Xóa thất bại!");
@@ -572,12 +578,12 @@ export async function themThucDon() {
 
     if (result.success) {
       alert(result.message);
-      if (typeof tai_ChiTietThucDon === "function") {
-        tai_ChiTietThucDon();
-      }
-      if (typeof tai_TrangThaiMonAn === "function") {
-        tai_TrangThaiMonAn();
-      }
+      if (typeof tai_ChiTietThucDon === "function") tai_ChiTietThucDon();
+
+      if (typeof tai_TrangThaiMonAn === "function") tai_TrangThaiMonAn();
+
+      if (typeof lay_DanhSachLuotQuanTam === "function")
+        lay_DanhSachLuotQuanTam();
     } else {
       alert(result.message);
       console.error("Lỗi không thể thêm món vào thực đơn: ", result.message);
@@ -617,12 +623,12 @@ export async function xoaThucDon() {
 
     if (result.success) {
       alert(result.message);
-      if (typeof tai_ChiTietThucDon === "function") {
-        tai_ChiTietThucDon();
-      }
-      if (typeof tai_TrangThaiMonAn === "function") {
-        tai_TrangThaiMonAn();
-      }
+      if (typeof tai_ChiTietThucDon === "function") tai_ChiTietThucDon();
+
+      if (typeof tai_TrangThaiMonAn === "function") tai_TrangThaiMonAn();
+
+      if (typeof lay_DanhSachLuotQuanTam === "function")
+        lay_DanhSachLuotQuanTam();
     } else {
       alert("Xóa thất bại: " + result.message);
       return;
@@ -757,6 +763,133 @@ async function tai_TrangThaiMonAn() {
 }
 
 // -----------------------------------------------------------------------------
+
+//=============================== THEO DÕI LƯỢT QUAN TÂM =======================
+
+let luotthich = null;
+// gọi api nhận dữ liệu chứa số liệu lượt thích để vẽ biểu đồ
+async function lay_DanhSachLuotQuanTam() {
+  try {
+    const url = `${API_BASE_URL}/api/luotthich`;
+    const res = await fetch(url);
+    const dataSet = await res.json();
+
+    if (!dataSet.success) {
+      alert(
+        dataSet.message || "Nhận dữ liệu không thành công. Vui lòng thử lại!",
+      );
+      return;
+    }
+
+    ve_BieuDoLuotThich(dataSet.data);
+    renderBXH(dataSet.data);
+  } catch (err) {
+    console.error("Không thể kết nối tới server: ", err);
+  }
+}
+
+let chartLuotThich = null;
+function ve_BieuDoLuotThich(danhsachMon) {
+  const canvas = document.getElementById("bieuDoLuotThich");
+  if (!canvas) return;
+
+  if (!Array.isArray(danhsachMon)) {
+    return;
+  }
+
+  const labels = danhsachMon.map((item) => item.TenMon || item.MaMon);
+  const likes = danhsachMon.map((item) => Number(item.TongLuotThich) || 0);
+
+  if (chartLuotThich) {
+    chartLuotThich.destroy();
+  }
+
+  chartLuotThich = new Chart(canvas, {
+    type: "bar",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: "Lượt thích",
+          data: likes,
+          borderWidth: 1,
+        },
+      ],
+    },
+    options: {
+      plugins: {
+        legends: {
+          display: true,
+        },
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            stepSize: 1,
+          },
+        },
+      },
+    },
+  });
+}
+
+function renderBXH(danhsachMon) {
+  const tbody = document.getElementById("bxh-monan");
+  if (!tbody || !Array.isArray(danhsachMon)) return;
+  
+  let TongLike = 0;
+  const luotthichMoi = {};
+  tbody.innerHTML = "";
+  for (let i = 0; i < danhsachMon.length; i++) {
+    const item = danhsachMon[i];
+    const soLikeHienTai = Number(item.TongLuotThich) || 0;
+    TongLike = TongLike + soLikeHienTai;
+    luotthichMoi[item.MaMon] = soLikeHienTai;
+    const row = document.createElement("tr");
+    const colHang = document.createElement("td");
+    const colTen = document.createElement("td");
+    const colNhom = document.createElement("td");
+    const colLike = document.createElement("td");
+    const xuHuong = document.createElement("td");
+
+    colHang.textContent = String(i + 1);
+    colTen.textContent = item.TenMon;
+    colNhom.textContent = item.TenNhom;
+    colLike.textContent = String(soLikeHienTai);
+
+    if (
+      luotthich !== null &&
+      Object.prototype.hasOwnProperty.call(luotthich, item.MaMon)
+    ) {
+      const chenhlech = soLikeHienTai - Number(luotthich[item.MaMon] || 0);
+      if (chenhlech > 0) xuHuong.textContent = "Tăng";
+      else if (chenhlech < 0) xuHuong.textContent = "Giảm";
+      else xuHuong.textContent = "Không đổi";
+    } else xuHuong.textContent = "Mới";
+
+    row.appendChild(colHang);
+    row.appendChild(colTen);
+    row.appendChild(colNhom);
+    row.appendChild(colLike);
+    row.appendChild(xuHuong);
+
+    tbody.appendChild(row);
+  }
+  luotthich = luotthichMoi;
+  renderSoLieu(TongLike, danhsachMon[0]);
+}
+
+function renderSoLieu(like, item){
+  const soLuotThich = document.getElementById('soluotthich');
+  const tenMon = document.getElementById('monduocthich');
+  if(!soLuotThich || !tenMon) return;
+
+  soLuotThich.textContent = String(like);
+  tenMon.textContent = item.TenMon;
+}
+
+//------------------------------------------------------------------------------
 
 //=============================== QUẢN LÝ TÀI KHOẢN ADMIN ======================
 // gọi API cho quản lý tài khoản admin
@@ -977,9 +1110,15 @@ async function delAdmin(item) {
   }
 }
 
-//------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
-//==================================== MỘT SỐ HÀM CHUNG ==============================================
+//==================================== THEO DÕI LƯỢT TRUY CẬP HÀNG NGÀY ============================
+
+// 1H SÁNG 23/11/2026 TỚI ĐÂY RỒI NHE
+
+//--------------------------------------------------------------------------------------------------
+
+//==================================== MỘT SỐ HÀM CHUNG ============================================
 // Định dang kiểu tiền tệ Việt Nam từ kiểu dữ liệu decimal(18,2) trong SQL Server
 function formatTienViet(amount) {
   if (

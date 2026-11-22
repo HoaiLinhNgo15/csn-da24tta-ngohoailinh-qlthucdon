@@ -352,7 +352,95 @@
 
           <!-- Danh mục theo dõi lượt quan tâm/thích -->
           <div id="luotquantam" class="layout-works">
-            <h2 class="subtitle">Lượt quan tâm</h2>
+            <h2 class="subtitle">Thống kê lượt quan tâm</h2>
+            <div id="thongke-luotthich">
+              <div class="solieuthanhphan">
+                <img src="" alt="" />
+                <p>
+                  Tổng số lượt thích: <br />
+                  <span id="soluotthich">1234</span>
+                </p>
+              </div>
+
+              <div class="solieuthanhphan">
+                <img src="" alt="" />
+                <p>
+                  Món ăn được yêu thích nhất:<br />
+                  <span id="monduocthich">Bún bò</span>
+                </p>
+              </div>
+
+              <div class="solieuthanhphan">
+                <img src="" alt="" />
+                <p>
+                  Lượt xem hằng ngày:<br />
+                  <span id="tongluotxem">2345</span>
+                </p>
+              </div>
+            </div>
+
+            <div style="padding: 24px">
+              <div id="bieudo-luotthich">
+                <p>top 5 món ăn phổ biến nhất (theo lượt quan tâm)</p>
+                <div style="max-width: 600px">
+                  <canvas id="bieuDoLuotThich"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <div style="padding: 24px">
+              <div id="bangxephang">
+                <p>Bảng xếp hạng món ăn hot</p>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>hạng</th>
+                      <th>Tên món</th>
+                      <th>nhóm món</th>
+                      <th>Số lượt quan tâm</th>
+                      <th>Xu hướng</th>
+                    </tr>
+                  </thead>
+                  <tbody id="bxh-monan">
+                    <tr>
+                      <td>1</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>2</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>3</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>4</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>5</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
 
           <!-- Danh mục quản lý admin -->
@@ -391,6 +479,8 @@
         </div>
       </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <script src="admin.js" type="module"></script>
   </body>
 </html>
