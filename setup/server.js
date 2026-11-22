@@ -212,7 +212,7 @@ app.put("/api/monan/:maMon", upload.single("hinhAnh"), async (req, res) => {
     if (!tenMon || !maNhom || !giaBan) {
       return res.status(400).json({
         success: false,
-        message: "Vui lòng nhập đầy đủ thông tin!!",
+        message: "Vui lòng nhập đầy đủ thông tin!",
       });
     }
 
@@ -272,25 +272,76 @@ app.put("/api/monan/:maMon", upload.single("hinhAnh"), async (req, res) => {
 
 //api xóa món ăn
 app.delete("/api/monan/:maMon", async (req, res) => {
+  const { maMon } = req.params;
+
+  if (!maMon) {
+    return res.status(400).json({
+      success: false,
+      message: "Thiếu mã món cần xóa!",
+    });
+  }
+
+  let pool;
+  let transaction;
   try {
-    const { maMon } = req.params;
+    pool = await getConnection();
+    transaction = new sql.Transaction(pool);
+    await transaction.begin();
 
-    const pool = await getConnection();
+    // xóa trong thực đơn
+    let deletedMenuRows = 0; // số lượng dòng đã xóa trong thực đơn
+    const deleteChiTietResult = await new sql.Request(transaction)
+      .input("MaMon", sql.VarChar(10), maMon)
+      .query("DELETE FROM CHI_TIET_THUC_DON WHERE MaMon = @MaMon");
 
-    await pool
-      .request()
+    deletedMenuRows = deleteChiTietResult.rowsAffected[0] || 0;
+
+    // xóa món ăn
+    const deleteMonAnResult = await new sql.Request(transaction)
       .input("MaMon", sql.VarChar(10), maMon)
       .query("DELETE FROM MONAN WHERE MaMon = @MaMon");
 
+    if (
+      !deleteMonAnResult.rowsAffected ||
+      deleteMonAnResult.rowsAffected[0] === 0
+    ) {
+      await transaction.rollback();
+      return res.status(404).json({
+        success: false,
+        message: "Không tìm thấy món ăn cần xóa",
+      });
+    }
+
+    await transaction.commit();
+
     return res.json({
       success: true,
-      message: `Đã xóa thành công món ăn có mã ${maMon}`,
+      message: `Đã xóa thành công món ăn có mã ${maMon} (xóa ${deletedMenuRows} dòng trong thực đơn)`,
+      deletedMenuRows,
     });
   } catch (err) {
-    console.error("Lỗi khi xóa món ăn: ", err);
-    res.status(500).json({
+    if (transaction) {
+      try {
+        await transaction.rollback();
+      } catch (rollbackErr) {
+        console.error("Lỗi rollback transaction:", rollbackErr);
+      }
+    }
+
+    console.error("Lỗi xóa món ăn:", err);
+
+    // Mã lỗi 547 của SQL Server thường là vi phạm ràng buộc FOREIGN KEY
+    if (err.number === 547) {
+      return res.status(409).json({
+        success: false,
+        message:
+          "Món ăn đang tồn tại trong thực đơn, cần xác nhận xóa cả trong thực đơn trước.",
+      });
+    }
+
+    return res.status(500).json({
       success: false,
-      message: "Lỗi server: " + err.message,
+      message: "Lỗi server khi xóa món ăn: " + err.message,
     });
   }
 });
@@ -324,15 +375,26 @@ app.get("/api/showmonan", async (req, res) => {
 //-----------------------------------------------------------------------
 
 /// ==================== QUẢN LÝ LẬP THỰC ĐƠN =============================
-
+// api lấy dữ liệu từ bảng CHI_TIET_THUC_DON
 app.get("/api/monan/thucdon", async (req, res) => {
+  const { ngay, maBuoi } = req.query;
+
+  if (!ngay || !maBuoi) {
+    return res.status(400).json({
+      success: false,
+      message: "Vui lòng chọn ngày và buổi",
+    });
+  }
+
   try {
     const pool = await getConnection();
 
     const result = await pool
       .request()
+      .input("NgayPhucVu", sql.Date, ngay)
+      .input("MaBuoi", sql.VarChar(10), maBuoi)
       .query(
-        "SELECT A.MaChiTiet, A.MaMon, B.TenMon, B.GiaBan, B.HinhAnh, A.NgayPhucVu, A.MaBuoi, C.TenBuoi, A.TrangThai, A.LuotQuanTam FROM CHI_TIET_THUC_DON AS A, MONAN AS B, TD_BUOI AS C WHERE A.MaMon = B.MaMon AND A.MaBuoi = C.MaBuoi",
+        "SELECT A.MaChiTiet, A.MaMon, B.TenMon, B.GiaBan, B.HinhAnh, A.NgayPhucVu, A.MaBuoi, C.TenBuoi, A.Trangthai, A.LuotQuanTam FROM CHI_TIET_THUC_DON AS A INNER JOIN MONAN AS B ON A.MaMon = B.MaMon INNER JOIN TD_BUOI AS C ON A.MaBuoi = C.MaBuoi WHERE A.NgayPhucVu = @NgayPhucVu AND A.MaBuoi = @MaBuoi ORDER BY A.MaBuoi, A.MaChiTiet",
       );
 
     return res.json({
@@ -349,9 +411,175 @@ app.get("/api/monan/thucdon", async (req, res) => {
   }
 });
 
-//-------------------------------------------------------------------------
+app.post("/api/thucdon/themmon", async (req, res) => {
+  const { maMon, ngay, maBuoi } = req.body;
 
-///===================== QUẢN LÝ TÀI KHOẢN ADMIN ============================
+  if (!maMon || !ngay || !maBuoi) {
+    return res.status(400).json({
+      success: false,
+      message: "Vui lòng chọn đầy đủ món ăn, ngày phục vụ và buổi!",
+    });
+  }
+
+  try {
+    const pool = await getConnection();
+
+    const existMon = await pool
+      .request()
+      .input("MaMon", sql.VarChar(10), maMon)
+      .input("NgayPhucVu", sql.Date, ngay)
+      .input("MaBuoi", sql.VarChar(10), maBuoi)
+      .query(
+        "SELECT * FROM CHI_TIET_THUC_DON WHERE MaMon = @MaMon AND  NgayPhucVu = @NgayPhucVu AND MaBuoi = @MaBuoi",
+      );
+
+    if (existMon.recordset.length > 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Món ăn này đã được thêm vào thực đơn",
+      });
+    }
+
+    const checkID = await pool
+      .request()
+      .query(
+        "SELECT MAX(CAST(SUBSTRING(MaChiTiet, 3, LEN(MaChiTiet)) AS INT)) AS MaxId FROM CHI_TIET_THUC_DON WHERE MaChiTiet LIKE 'CT%'",
+      );
+
+    let nextNum = 1;
+    if (checkID.recordset.length > 0 && checkID.recordset[0].MaxId !== null) {
+      nextNum = checkID.recordset[0].MaxId + 1;
+    }
+
+    const maCT = "CT" + String(nextNum).padStart(3, "0");
+
+    await pool
+      .request()
+      .input("MaChiTiet", sql.VarChar(10), maCT)
+      .input("MaMon", sql.VarChar(10), maMon)
+      .input("NgayPhucVu", sql.Date, ngay)
+      .input("MaBuoi", sql.VarChar(10), maBuoi)
+      .query(
+        "INSERT INTO CHI_TIET_THUC_DON (MaChiTiet, MaMon, NgayPhucVu, MaBuoi) VALUES (@MaChiTiet, @MaMon, @NgayPhucVu, @MaBuoi)",
+      );
+
+    return res.json({
+      success: true,
+      message: "Thêm thành công món ăn vào thực đơn",
+    });
+  } catch (err) {
+    console.error("Lỗi server: ", err);
+    return res.status(500).json({
+      success: false,
+      message: "Không thể kết nối server: " + err.message,
+    });
+  }
+});
+
+app.delete("/api/thucdon/xoamon", async (req, res) => {
+  const { maMon, ngay, maBuoi } = req.query;
+
+  try {
+    if (!maMon || !ngay || !maBuoi) {
+      return res.status(400).json({
+        success: false,
+        message: "Vui lòng chọn đầy đủ mã món, ngày và buổi",
+      });
+    }
+    const pool = await getConnection();
+
+    await pool
+      .request()
+      .input("MaMon", sql.VarChar(10), maMon)
+      .input("NgayPhucVu", sql.Date, ngay)
+      .input("MaBuoi", sql.VarChar(10), maBuoi)
+      .query(
+        "DELETE FROM CHI_TIET_THUC_DON WHERE MaMon = @MaMon AND NgayPhucVu = @NgayPhucVu AND MaBuoi = @MaBuoi",
+      );
+    return res.json({
+      success: true,
+      message: "Xóa món này ra khỏi thực đơn thành công!",
+    });
+  } catch (err) {
+    console.error("Lỗi kết nối Server: ", err);
+    return res.status(500).json({
+      success: false,
+      message: "Kết nối với Server không thành công: " + err.message,
+    });
+  }
+});
+
+//------------------------------------------------------------------------------
+
+//====================== THAY ĐỔI TRẠNG THÁI MÓN ĂN ============================
+app.post("/api/thucdon/capnhattrangthai", async (req, res) => {
+  const { maMon, trangthaiMoi } = req.body;
+  const { ngay, maBuoi } = req.query;
+
+  const trangThaiCoHopLe =
+    trangthaiMoi !== undefined &&
+    trangthaiMoi !== null &&
+    trangthaiMoi !== "" &&
+    (trangthaiMoi === 0 ||
+      trangthaiMoi === 1 ||
+      trangthaiMoi === "0" ||
+      trangthaiMoi === "1" ||
+      typeof trangThaiCoHopLe === "boolean");
+
+  if (!maMon || !trangThaiCoHopLe || !ngay || !maBuoi) {
+    return res.status(400).json({
+      success: false,
+      message: "Không đủ dữ liệu để truy vấn!",
+    });
+  }
+
+  const bitValue =
+    typeof trangthaiMoi === "boolean"
+      ? trangthaiMoi
+      : Number(trangthaiMoi) === 1;
+
+  try {
+    const pool = await getConnection();
+
+    const result = await pool
+      .request()
+      .input("MaMon", sql.VarChar(10), maMon)
+      .input("MaBuoi", sql.VarChar(10), maBuoi)
+      .input("NgayPhucVu", sql.Date, ngay)
+      .input("Trangthai", sql.Bit, bitValue)
+      .query(
+        "UPDATE CHI_TIET_THUC_DON SET Trangthai = @Trangthai WHERE MaMon = @MaMon AND MaBuoi = @MaBuoi AND NgayPhucVu = @NgayPhucVu",
+      );
+
+    const soDongCapNhat = result.rowsAffected?.[0] ?? 0;
+    if (soDongCapNhat === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Không tìm thấy món ăn trong thực đơn ngày/buổi đã chọn!",
+      });
+    }
+
+    return res.json({
+      success: true,
+      message: "Cập nhật món ăn thành công!",
+      data: {
+        maMon,
+        maBuoi,
+        ngay,
+        trangthai: bitValue ? 1 : 0,
+      },
+    });
+  } catch (err) {
+    console.error("Lỗi kết nối server: ", err);
+    return res.status(500).json({
+      success: false,
+      message: "Kết nối server không thành công!" + err.message,
+    });
+  }
+});
+//------------------------------------------------------------------------------
+
+///===================== QUẢN LÝ TÀI KHOẢN ADMIN ===============================
 
 // api đọc dữ liệu thực thể admin
 app.get("/api/readuser", async (req, res) => {
@@ -464,16 +692,44 @@ app.post("/api/admin/create", async (req, res) => {
 });
 
 // api đổi trạng thái của admin từ 1 về 0 - bị vô hiệu hóa
-app.put("/api/admin/trangthai/:id", async (req, res) => {
-  const maAdmin = req.params.id;
+app.post("/api/admin/trangthai/:id", async (req, res) => {
+  const maAdmin = Number(req.params.id);
+
+  if (!Number.isInteger(maAdmin) || maAdmin <= 0) {
+    return res.status(400).json({
+      success: false,
+      message: "Mã admin không hợp lệ!",
+    });
+  }
 
   try {
     const pool = await getConnection();
 
+    const result = await pool
+      .request()
+      .input("MaAdmin", sql.Int, maAdmin)
+      .query(
+        "SELECT MaAdmin, TenDangNhap, HoTen, Trangthai FROM ADMINISTRATOR WHERE MaAdmin = @MaAdmin",
+      );
+
+    if (result.recordset.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Không tìm thấy tài khoản admin!",
+      });
+    }
+    const adminHientai = result.recordset[0];
+    const trangthaiHientai = Number(adminHientai.Trangthai);
+
+    const trangThaiMoi = trangthaiHientai === 1 ? 0 : 1;
+
     await pool
       .request()
       .input("MaAdmin", sql.Int, maAdmin)
-      .query("UPDATE ADMINISTRATOR SET Trangthai = 0 WHERE MaAdmin = @MaAdmin");
+      .input("Trangthai", sql.Bit, trangThaiMoi)
+      .query(
+        "UPDATE ADMINISTRATOR SET Trangthai = @Trangthai WHERE MaAdmin = @MaAdmin",
+      );
 
     return res.json({
       success: true,

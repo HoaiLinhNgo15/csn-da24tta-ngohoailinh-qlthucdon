@@ -144,11 +144,36 @@ INSERT INTO CHI_TIET_THUC_DON (MaChiTiet, MaMon, NgayPhucVu, MaBuoi) VALUES ('CT
 
 SELECT A.MaChiTiet, A.MaMon, B.TenMon, B.GiaBan, B.HinhAnh, A.NgayPhucVu, A.MaBuoi, C.TenBuoi, A.TrangThai, A.LuotQuanTam
 FROM CHI_TIET_THUC_DON AS A, MONAN AS B, TD_BUOI AS C
-WHERE A.MaMon = B.MaMon AND A.MaBuoi = C.MaBuoi
+WHERE A.MaMon = B.MaMon AND A.MaBuoi = C.MaBuoi AND NgayPhucVu = '2026-11-14'
+
+SELECT 
+    A.MaChiTiet,
+    A.MaMon,
+    B.TenMon,
+    B.GiaBan,
+    B.HinhAnh,
+    A.NgayPhucVu,
+    A.MaBuoi,
+    C.TenBuoi,
+    A.TrangThai,
+    A.LuotQuanTam
+FROM CHI_TIET_THUC_DON AS A
+INNER JOIN MONAN AS B ON A.MaMon = B.MaMon
+INNER JOIN TD_BUOI AS C ON A.MaBuoi = C.MaBuoi
+WHERE A.NgayPhucVu = '2026-11-14' AND A.MaBuoi = 'B01'
+ORDER BY A.MaBuoi, A.MaChiTiet;
+
+SELECT *
+FROM CHI_TIET_THUC_DON
+WHERE MaMon = 'MA001' AND  NgayPhucVu = '2026-11-14' AND MaBuoi = 'B01'
 
 SELECT A.MaMon, A.TenMon, A.HinhAnh, A.GiaBan, B.TenNhom
 FROM MONAN AS A
 JOIN NHOMMON AS B ON A.MaNhom = B.MaNhom
+
+SELECT MAX(CAST(SUBSTRING(MaChiTiet, 3, LEN(MaChiTiet)) AS INT)) AS MaxId
+FROM CHI_TIET_THUC_DON
+WHERE MaChiTiet LIKE 'CT%'
 
 SELECT TOP 1 MaMon FROM MONAN ORDER BY MaMon DESC
 
@@ -159,3 +184,13 @@ FROM MONAN
 ORDER BY CAST(SUBSTRING(MaMon, 3, LEN(MaMon)) AS INT) DESC;
 
 SELECT MAX(CAST(SUBSTRING(MaMon, 3, LEN(MaMon)) AS INT)) FROM MONAN;
+
+SELECT 
+    COLUMN_NAME,
+    DATA_TYPE,
+    CHARACTER_MAXIMUM_LENGTH,
+    IS_NULLABLE
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = 'MONAN';
+
+DELETE FROM CHI_TIET_THUC_DON WHERE MaMon = 'MA001' AND NgayPhucVu = '2026-11-14' AND MaBuoi = 'B01'

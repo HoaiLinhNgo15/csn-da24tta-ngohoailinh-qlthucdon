@@ -1,11 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-  loadTableData();
-  capnhatMonAn();
-  loadDataList();
-  loadAdminTable();
-  createNewAdmin();
-  tai_ChiTietThucDon();
-
   const userData = sessionStorage.getItem("adminUser");
   const adminName = document.getElementById("AdminName");
   if (userData && adminName) {
@@ -28,28 +21,72 @@ document.addEventListener("DOMContentLoaded", () => {
     const day = String(today.getDate()).padStart(2, "0");
 
     // Gán giá trị mặc định là ngày hôm nay
-    chonNgayInput.value = `${year}-${month}-${day}`;
+    let currentDay = `${year}-${month}-${day}`;
+    chonNgayInput.value = currentDay;
 
-    const dishList = document.getElementById("dish-list");
+    chonNgayInput.addEventListener("change", tai_ChiTietThucDon);
 
-    if (dishList) {
-      dishList.addEventListener("click", (e) => {
-        // Tìm thẻ card món ăn gần nhất được bấm vào
-        const card = e.target.closest(".card-monan");
-        if (!card) return; // Nếu bấm ra ngoài thẻ card thì bỏ qua
-
-        // (Tùy chọn) Xóa class 'selected' của tất cả các card khác nếu muốn chỉ chọn 1 card tại một thời điểm
-        const allCards = dishList.querySelectorAll(".card-monan");
-        allCards.forEach((c) => c.classList.remove("selected"));
-
-        // Thêm class 'selected' cho card vừa được bấm
-        card.classList.add("selected");
-      });
+    const ngayhientai = document.getElementById("ngayhientai");
+    const cahientai = document.getElementById("cahientai");
+    ngayhientai.textContent = `(${day}/${month}/${year})`;
+    const hour = today.getHours();
+    //const hour = 19;
+    if (hour >= 5 && hour < 10) {
+      cahientai.textContent = "sáng";
+    } else if (hour >= 10 && hour < 15) {
+      cahientai.textContent = "trưa";
+    } else if (hour >= 15 && hour < 18) {
+      cahientai.textContent = "chiều";
+    } else {
+      cahientai.textContent = "tối";
     }
   }
+
+  const dishList = document.getElementById("dish-list");
+  if (dishList) {
+    dishList.addEventListener("click", (e) => {
+      // Tìm thẻ card món ăn gần nhất được bấm vào
+      const card = e.target.closest(".card-monan.monan");
+      if (!card) return; // Nếu bấm ra ngoài thẻ card thì bỏ qua
+
+      // (Tùy chọn) Xóa class 'selected' của tất cả các card khác nếu muốn chỉ chọn 1 card tại một thời điểm
+      const allCards = dishList.querySelectorAll(".card-monan.monan");
+      allCards.forEach((c) => c.classList.remove("selected"));
+
+      // Thêm class 'selected' cho card vừa được bấm
+      card.classList.add("selected");
+    });
+  }
+
+  const DS_ThucDon = document.getElementById("danhsachthedachon");
+  if (DS_ThucDon) {
+    DS_ThucDon.addEventListener("click", (e) => {
+      // tìm thẻ gần nhất được bấm vào
+      const card = e.target.closest(".card-monan.thucdon");
+      if (!card) return;
+
+      const allCards = DS_ThucDon.querySelectorAll(".card-monan.thucdon");
+      allCards.forEach((c) => c.classList.remove("selected"));
+
+      card.classList.add("selected");
+    });
+  }
+
+  document.querySelectorAll('input[name="buoi"]').forEach((radio) => {
+    radio.addEventListener("change", tai_ChiTietThucDon);
+  });
+
+  loadTableData();
+  capnhatMonAn();
+  loadDataList();
+  loadAdminTable();
+  createNewAdmin();
+  tai_ChiTietThucDon();
+  tai_TrangThaiMonAn();
 });
 //------------------------------------------------------------------------------
 
+const API_BASE_URL = "http://localhost:3002";
 //============================= QUẢN LÝ MÓN ĂN =================================
 //CREATE & UPDATE
 
@@ -271,12 +308,12 @@ async function loadTableData() {
         row.appendChild(colPrice);
 
         //cột trạng thái --bổ sung class còn/hết món
-        const colBadge = document.createElement("td");
-        const textBadge = document.createElement("span");
-        textBadge.setAttribute("class", "badge-status");
-        textBadge.textContent = "Còn";
-        colBadge.appendChild(textBadge);
-        row.appendChild(colBadge);
+        // const colBadge = document.createElement("td");
+        // const textBadge = document.createElement("span");
+        // textBadge.setAttribute("class", "badge-status");
+        // textBadge.textContent = "Còn";
+        // colBadge.appendChild(textBadge);
+        // row.appendChild(colBadge);
 
         //cột thao tác
         const colTT = document.createElement("td");
@@ -297,7 +334,7 @@ async function loadTableData() {
         const btn2 = document.createElement("button");
         btn2.setAttribute("class", "btn");
         btn2.textContent = "Xóa";
-        //bổ sung sự kiện xóa vào đây--------------------------------
+        //bổ sung sự kiện xóa vào đây
         btn2.addEventListener("click", () => {
           xoaMonAn(item.MaMon);
         });
@@ -318,23 +355,42 @@ async function loadTableData() {
 }
 
 // DELETE
-async function xoaMonAn(maMon) {
-  if (!confirm(`Bạn có chắc muốn xóa món ăn có mã ${maMon} không?`)) {
+async function xoaMonAn(maMon, tenMon = "") {
+  if (!maMon) {
+    alert("Không tìm thấy món cần xóa!");
+    return;
+  }
+
+  const tenHienThi = tenMon ? `"${tenMon}" (${maMon})` : `mã ${maMon}`;
+  const chapnhanRuiRo = window.confirm(
+    `Món ăn ${tenHienThi} có thể đang nằm trong thực đơn.\n` +
+      `Nếu tiếp tục, hệ thống sẽ xóa món ăn này ra khỏi "Tất cả" thực đơn trước rồi mới xóa món ăn.\n\n` +
+      `Bạn có chắc chắn muốn tiếp tục?`,
+  );
+
+  if (!chapnhanRuiRo) {
     return;
   }
 
   try {
-    const response = await fetch(`http://localhost:3002/api/monan/${maMon}`, {
+    const url = `${API_BASE_URL}/api/monan/${encodeURIComponent(maMon)}?cascadeThucDon = true`;
+    const response = await fetch(url, {
       method: "DELETE",
-      headers: { "Content-Type": "application/json" },
     });
 
     const results = await response.json();
 
-    if (results.success) {
+    if (response.ok && results.success) {
       alert(results.message);
       if (typeof loadTableData === "function") {
         loadTableData();
+      }
+      if (typeof tai_ChiTietThucDon === "function") {
+        tai_ChiTietThucDon();
+      }
+      if (typeof loadDataList === "function") loadDataList();
+      if (typeof tai_TrangThaiMonAn === "function") {
+        tai_TrangThaiMonAn();
       }
     } else {
       alert(results.message || "Xóa thất bại!");
@@ -356,6 +412,7 @@ async function loadDataList() {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     });
+
     const dataSet = await response.json();
     if (dataSet.success) {
       const dishContainer = document.getElementById("dish-list");
@@ -365,7 +422,7 @@ async function loadDataList() {
       for (let i = 0; i < dishList.length; i++) {
         // tạo phần tử chứa thành phần ảnh và tên món ăn
         const dishCard = document.createElement("div");
-        dishCard.setAttribute("class", "card-monan");
+        dishCard.setAttribute("class", "card-monan monan");
 
         // tạo hình ảnh món ăn
         const IMG = document.createElement("img");
@@ -377,9 +434,16 @@ async function loadDataList() {
         dishName.setAttribute("class", "tenmon");
         dishName.textContent = dishList[i].TenMon;
 
+        // cài mã món ẩn
+        // const maMon = document.createElement("span");
+        // maMon.style.display = "none";
+        // maMon.textContent = dishList[i].MaMon;
+        dishCard.dataset.maMon = dishList[i].MaMon;
+
         // thêm phẩn tử IMG & dishName vào dishCard
         dishCard.appendChild(IMG);
         dishCard.appendChild(dishName);
+        //dishCard.appendChild(maMon);
 
         // thêm dishCard vào khung chứa trên web
         dishContainer.appendChild(dishCard);
@@ -394,25 +458,53 @@ async function loadDataList() {
 
 // gọi api đưa dữ liệu từ bảng CHI_TIET_THUC_DON vào giao diện web
 async function tai_ChiTietThucDon() {
-  try {
-    const response = await fetch("http://localhost:3002/api/monan/thucdon", {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    });
+  const ngayInput = document.getElementById("chonNgay");
+  const maBuoiInput = document.querySelector('input[name="buoi"]:checked');
+  const listCard = document.getElementById("danhsachthedachon");
 
-    const dataSet = await response.json();
+  const ngay = ngayInput ? ngayInput.value.trim() : "";
+  const maBuoi = maBuoiInput ? maBuoiInput.value.trim() : "";
+
+  if (!ngay || !maBuoi) {
+    if (listCard) {
+      listCard.innerHTML = "<p>Vui lòng chọn ngày và buổi.</p>";
+    }
+    return;
+  }
+  try {
+    if (listCard) {
+      listCard.innerHTML = "<p>Đang tải thực đơn...</p>";
+    }
+    // const formData = {
+    //   ngay: ngay,
+    //   maBuoi: maBuoi,
+    // };
+
+    const url = `${API_BASE_URL}/api/monan/thucdon?ngay=${encodeURIComponent(ngay)}&maBuoi=${encodeURIComponent(maBuoi)}`;
+    const res = await fetch(url);
+    const dataSet = await res.json();
+
+    //const dataSet = await response.json();
     if (dataSet.success) {
       const listThucDon = dataSet.data;
-      const listCard = document.getElementById("danhsachthedachon");
+      if (listThucDon.length === 0) {
+        listCard.innerHTML = "Không có món trong thực đơn";
+        return;
+      }
       listCard.innerHTML = "";
       for (let i = 0; i < listThucDon.length; i++) {
+        const item = listThucDon[i];
         // tạo phần tử làm thẻ chứa thông tin của mỗi món
         const card = document.createElement("div");
-        card.setAttribute("class", "card-monan");
+        card.setAttribute("class", "card-monan thucdon");
 
         // tạo thẻ thành phần món
         const IMG = document.createElement("img");
-        IMG.setAttribute("src", listThucDon[i].HinhAnh);
+        const imgSrc =
+          item.HinhAnh && item.HinhAnh.startsWith("/")
+            ? `${API_BASE_URL}${item.HinhAnh}`
+            : item.HinhAnh || "";
+        IMG.setAttribute("src", imgSrc);
         IMG.setAttribute("alt", listThucDon[i].TenMon);
 
         const tenMon = document.createElement("p");
@@ -421,6 +513,7 @@ async function tai_ChiTietThucDon() {
 
         card.appendChild(IMG);
         card.appendChild(tenMon);
+        card.dataset.maMon = listThucDon[i].MaMon;
 
         listCard.appendChild(card);
       }
@@ -432,9 +525,240 @@ async function tai_ChiTietThucDon() {
   }
 }
 
-//-------------------------------------------------------------------------------
+// gọi api và xử lý thêm món ăn vào thực đơn
+export async function themThucDon() {
+  //lấy form chứa thông tin ngày và buổi
+  //const myFrm = document.getElementById("phanloai");
+  const date = document.getElementById("chonNgay");
+  const partDate = document.querySelector('input[name="buoi"]:checked');
+  const cardSelected = document.querySelector(".monan.selected");
 
-///============================== QUẢN LÝ TÀI KHOẢN ADMIN ========================
+  const convertMaBuoi = {
+    B01: "Sáng",
+    B02: "Trưa",
+    B03: "Chiều",
+  };
+
+  if (!cardSelected) {
+    alert("Vui lòng chọn một món ăn trước!");
+    return;
+  }
+
+  if (!partDate || !date) {
+    //const card = cardSelected[0];
+    alert("Lỗi truy cập phần tử HTML");
+    return;
+  }
+
+  const maMon = cardSelected.dataset.maMon;
+  const day = date.value;
+  const maBuoi = partDate.value;
+
+  try {
+    //đóng gói dữ liệu
+    const formData = {
+      maMon: maMon,
+      ngay: day,
+      maBuoi: maBuoi,
+    };
+
+    const response = await fetch("http://localhost:3002/api/thucdon/themmon", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      alert(result.message);
+      if (typeof tai_ChiTietThucDon === "function") {
+        tai_ChiTietThucDon();
+      }
+      if (typeof tai_TrangThaiMonAn === "function") {
+        tai_TrangThaiMonAn();
+      }
+    } else {
+      alert(result.message);
+      console.error("Lỗi không thể thêm món vào thực đơn: ", result.message);
+    }
+  } catch (err) {
+    console.error("Không thể kết nối server: ", err);
+  }
+}
+
+export async function xoaThucDon() {
+  const date = document.getElementById("chonNgay");
+  const partDate = document.querySelector('input[name="buoi"]:checked');
+  const cardSelected = document.querySelector(".thucdon.selected");
+
+  if (!cardSelected) {
+    alert("Vui lòng chọn 1 món ăn trước!");
+    return;
+  }
+
+  try {
+    const ngay = date.value.trim();
+    const maBuoi = partDate.value.trim();
+    const maMon = cardSelected.dataset.maMon.trim();
+
+    if (!maMon || !ngay || !maBuoi) {
+      console.error("Lỗi khi lấy dữ liệu cho thực hiện xóa!");
+      return;
+    }
+
+    //alert(`Mã Món: ${maMon}, ${ngay}, ${maBuoi}`);
+    const url = `${API_BASE_URL}/api/thucdon/xoamon?maMon=${encodeURIComponent(maMon)}&ngay=${encodeURIComponent(ngay)}&maBuoi=${encodeURIComponent(maBuoi)}`;
+    const response = await fetch(url, {
+      method: "DELETE",
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      alert(result.message);
+      if (typeof tai_ChiTietThucDon === "function") {
+        tai_ChiTietThucDon();
+      }
+      if (typeof tai_TrangThaiMonAn === "function") {
+        tai_TrangThaiMonAn();
+      }
+    } else {
+      alert("Xóa thất bại: " + result.message);
+      return;
+    }
+  } catch (err) {
+    console.error("Không thể kết nối Server: ", err);
+  }
+}
+
+//------------------------------------------------------------------------------
+
+//=============================== THAY ĐỔI TRẠNG THÁI MÓN ĂN ===================
+
+// hàm render món lên web
+function renderTrangthaimon(listMon) {
+  const container = document.getElementById("trangthai-container");
+  if (!Array.isArray(listMon) || listMon.length === 0) {
+    container.innerHTML = "<p>Thực đơn hôm nay không có món nào!</p>";
+    return;
+  }
+
+  container.innerHTML = "";
+  for (let i = 0; i < listMon.length; i++) {
+    const item = listMon[i];
+
+    const card = document.createElement("div");
+    card.setAttribute("class", "trangthai-card");
+
+    const img_price = document.createElement("div");
+    img_price.setAttribute("class", "trangthai-IMG-Price");
+    img_price.style.backgroundImage = `url(..${item.HinhAnh})`;
+    const price = document.createElement("span");
+    price.setAttribute("class", "trangthai-price");
+    price.textContent = formatTienViet(item.GiaBan);
+    img_price.appendChild(price);
+
+    const tenmon = document.createElement("p");
+    tenmon.setAttribute("class", "trangthai-tenmon");
+    tenmon.textContent = item.TenMon;
+
+    const lbl = document.createElement("label");
+    lbl.setAttribute("class", "switch");
+
+    const checkBox = document.createElement("input");
+    checkBox.setAttribute("type", "checkbox");
+    checkBox.checked = Number(item.Trangthai) === 1;
+
+    checkBox.addEventListener("change", async () => {
+      const trangthaiMoi = checkBox.checked ? 1 : 0;
+      checkBox.disabled = true;
+
+      try {
+        const url = `${API_BASE_URL}/api/thucdon/capnhattrangthai?ngay=${encodeURIComponent(item.NgayPhucVu)}&maBuoi=${encodeURIComponent(item.MaBuoi)}`;
+        const res = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            maMon: item.MaMon,
+            trangthaiMoi: trangthaiMoi,
+          }),
+        });
+
+        const result = await res.json();
+        if (!res.ok || !result.success) {
+          throw new Error(result.message || "Cập nhật trạng thái thất bại!");
+        }
+        item.Trangthai = trangthaiMoi;
+      } catch (err) {
+        console.error("Lỗi cập nhật trạng thái: ", err);
+        checkBox.checked = !checkBox.checked;
+        alert("Không thể thay đổi trạng thái món, vui lòng thử lại!");
+      } finally {
+        checkBox.disabled = false;
+      }
+    });
+
+    const slider = document.createElement("span");
+    slider.setAttribute("class", "slider round");
+    lbl.appendChild(checkBox);
+    lbl.appendChild(slider);
+
+    card.appendChild(img_price);
+    card.appendChild(tenmon);
+    card.appendChild(lbl);
+    card.dataset.MaMon = item.MaMon;
+    card.dataset.MaChiTiet = item.MaChiTiet;
+
+    container.appendChild(card);
+  }
+}
+
+// gọi api tải dữ liệu tên danh mục trạng thái món
+// dùng /api/monan/thucdon?
+async function tai_TrangThaiMonAn() {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const day = String(today.getDate()).padStart(2, "0");
+  const hour = today.getHours();
+  const ngay = `${year}-${month}-${day}`;
+  let maBuoi;
+  if (hour >= 5 && hour < 10) maBuoi = "B01";
+  else if (hour >= 10 && hour < 15) maBuoi = "B02";
+  else if (hour >= 15 && hour < 18) maBuoi = "B03";
+  else {
+    document.getElementById("trangthai-container").innerHTML =
+      "<p>Hiện tại căn tin không phục vụ. Vui lòng chờ đến ngày mai!</p>";
+    return;
+  }
+  try {
+    if (!ngay || !maBuoi) {
+      console.error("Không lấy được thông tin ngày và buổi hiện tại");
+      document.getElementById("trangthai-container").innerHTML =
+        "<p>Đang tải thông tin....</p>";
+      return;
+    }
+    const url = `${API_BASE_URL}/api/monan/thucdon?ngay=${encodeURIComponent(ngay)}&maBuoi=${encodeURIComponent(maBuoi)}`;
+    const response = await fetch(url);
+    const dataSet = await response.json();
+
+    if (dataSet.success) {
+      if (typeof renderTrangthaimon === "function") {
+        renderTrangthaimon(dataSet.data);
+      }
+    } else {
+      document.getElementById("trangthai-container").innerHTML =
+        "<p>Không có dữ liệu!</p>";
+    }
+  } catch (err) {
+    console.error("Không kết nối được đến server!", err);
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+//=============================== QUẢN LÝ TÀI KHOẢN ADMIN ======================
 // gọi API cho quản lý tài khoản admin
 // đọc
 async function loadAdminTable() {
@@ -494,6 +818,14 @@ async function loadAdminTable() {
 
         //thêm sự kiện click cho các nút ở đây
         btn1.addEventListener("click", () => {
+          const userData = sessionStorage.getItem("adminUser");
+          const user = JSON.parse(userData);
+          if (user.id !== 1) {
+            alert(
+              "Bạn không có quyền sửa mật khẩu. Vui lòng liên hệ Admin hoặc vào tài khoản của admin!",
+            );
+            return;
+          }
           resetAdmin(listAdmin[i]);
           showFrm("quanlyadmin");
         });
@@ -615,15 +947,21 @@ async function delAdmin(item) {
     alert("Không thể khóa tài khoản đang đăng nhập!");
     return;
   }
+  if (item.MaAdmin == 1) {
+    alert("Không thể khóa tài khoản này!");
+    return;
+  }
 
+  if (user.id != 1) {
+    alert("Bạn không có quyền khóa tài khoản khác!");
+    return;
+  }
   try {
-    const response = await fetch(
-      `http://localhost:3002/api/admin/trangthai/${item.MaAdmin}`,
-      {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-      },
-    );
+    const url = `${API_BASE_URL}/api/admin/trangthai/${item.MaAdmin}`;
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    });
 
     const result = await response.json();
     if (result.success) {
@@ -631,6 +969,8 @@ async function delAdmin(item) {
       if (typeof loadAdminTable === "function") {
         loadAdminTable();
       }
+    } else {
+      alert(result.message);
     }
   } catch (err) {
     console.error("Không thể kết nối server: ", err);
@@ -716,3 +1056,5 @@ window.hideFrm = hideFrm;
 window.capnhatMonAn = capnhatMonAn;
 window.chuanbiForm = chuanbiForm;
 window.createNewAdmin = createNewAdmin;
+window.themThucDon = themThucDon;
+window.xoaThucDon = xoaThucDon;

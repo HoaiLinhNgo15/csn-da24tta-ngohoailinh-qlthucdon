@@ -226,7 +226,7 @@
                   <th>Tên món</th>
                   <th>Nhóm món</th>
                   <th>Giá bán</th>
-                  <th>Trạng thái</th>
+                  <!-- <th>Trạng thái</th> -->
                   <th>Thao tác</th>
                 </tr>
               </thead>
@@ -248,17 +248,17 @@
 
                 <div class="buoi-container">
                   <label class="buoi-item">
-                    <input type="radio" name="buoi" value="S" checked />
+                    <input type="radio" name="buoi" value="B01" checked />
                     <span>Sáng</span>
                   </label>
 
                   <label class="buoi-item">
-                    <input type="radio" name="buoi" value="T" />
+                    <input type="radio" name="buoi" value="B02" />
                     <span>Trưa</span>
                   </label>
 
                   <label class="buoi-item">
-                    <input type="radio" name="buoi" value="C" />
+                    <input type="radio" name="buoi" value="B03" />
                     <span>Chiều</span>
                   </label>
                 </div>
@@ -271,7 +271,7 @@
                 <!--Tạo thẻ món ăn-->
                 <div class="container-card" id="dish-list">
                   <!--
-                  <div class="card-monan">
+                  <div class="card-monan monan">
                     <img src="images/comtam.png" alt="Hình ảnh cơm tấm" />
                     <p class="tenmon">Cơm tấm</p>
                   </div>
@@ -280,15 +280,17 @@
               </div>
 
               <div id="thaotac">
-                <button class="btn btn-add">Thêm</button>
-                <button class="btn">Xóa</button>
+                <button class="btn btn-add" onclick="themThucDon()">
+                  Thêm
+                </button>
+                <button class="btn" onclick="xoaThucDon()">Xóa</button>
               </div>
 
               <div id="danhsachchon" class="danhsach">
                 <h3 class="subtitle-ds">Danh sách đã chọn</h3>
                 <!--Tạo thẻ món ăn-->
                 <div class="container-card" id="danhsachthedachon">
-                  <div class="card-monan">
+                  <div class="card-monan thucdon">
                     <img src="images/comtam.png" alt="Hình ảnh cơm tấm" />
                     <p class="tenmon">Cơm tấm</p>
                   </div>
@@ -322,14 +324,38 @@
             </div>
           </div>
 
+          <!-- Danh mục thay đổi trạng thái món ăn nhanh -->
           <div id="trangthai" class="layout-works">
             <h2 class="subtitle">Trạng thái còn/hết</h2>
+            <div id="trangthai-header">
+              <p>
+                Thực đơn hôm nay <span id="ngayhientai"></span> - ca
+                <span id="cahientai"></span>
+              </p>
+            </div>
+
+            <div id="trangthai-container">
+              <div class="trangthai-card">
+                <div class="trangthai-IMG-Price">
+                  <span class="trangthai-price">35000</span>
+                </div>
+
+                <p class="trangthai-tenmon">Cà phê</p>
+
+                <label class="switch">
+                  <input type="checkbox" />
+                  <span class="slider round"></span>
+                </label>
+              </div>
+            </div>
           </div>
 
+          <!-- Danh mục theo dõi lượt quan tâm/thích -->
           <div id="luotquantam" class="layout-works">
             <h2 class="subtitle">Lượt quan tâm</h2>
           </div>
 
+          <!-- Danh mục quản lý admin -->
           <div id="quanly-user" class="layout-works">
             <h2 class="subtitle">Quản lý món ăn</h2>
             <button class="btn" onclick="showFrm('quanlyadmin')">
