@@ -583,26 +583,25 @@ app.post("/api/thucdon/capnhattrangthai", async (req, res) => {
 
 // api lấy tổng số lượt thích của từng món ăn
 app.get("/api/luotthich", async (req, res) => {
-  try{
+  try {
     const pool = await getConnection();
 
     const result = await pool
-    .request()
-    .query(
-      "SELECT A.MaMon, A.TenMon, A.HinhAnh, C.MaNhom, C.TenNhom, COALESCE(SUM(B.LuotQuanTam), 0) AS TongLuotThich FROM MONAN AS A LEFT JOIN CHI_TIET_THUC_DON AS B ON A.MaMon = B.MaMon INNER JOIN NHOMMON AS C ON C.MaNhom = A.MaNhom GROUP BY A.MaMon, A.TenMon, A.HinhAnh, C.MaNhom, C.TenNhom ORDER BY TongLuotThich DESC"
-    );
+      .request()
+      .query(
+        "SELECT A.MaMon, A.TenMon, A.HinhAnh, C.MaNhom, C.TenNhom, COALESCE(SUM(B.LuotQuanTam), 0) AS TongLuotThich FROM MONAN AS A LEFT JOIN CHI_TIET_THUC_DON AS B ON A.MaMon = B.MaMon INNER JOIN NHOMMON AS C ON C.MaNhom = A.MaNhom GROUP BY A.MaMon, A.TenMon, A.HinhAnh, C.MaNhom, C.TenNhom ORDER BY TongLuotThich DESC",
+      );
 
     return res.json({
       success: true,
       message: "Lấy dữ liệu thành công!",
       data: result.recordset,
     });
-  }
-  catch(err){
+  } catch (err) {
     console.error("Lỗi server: ", err);
     return res.status(500).json({
       success: false,
-      message: "Không kết nối được Server!" + err.message
+      message: "Không kết nối được Server!" + err.message,
     });
   }
 });
@@ -778,26 +777,63 @@ app.post("/api/admin/trangthai/:id", async (req, res) => {
 
 //========================== THEO DÕI LƯỢT TRUY CẬP HÀNG NGÀY ==================
 
+// api lấy lượt truy cập từ cơ sở dữ liệu
+app.get("/api/luottruycap/homnay", async (req, res) => {
+  const duongDan = (req.query?.duongDan || "").toString().trim();
+
+  try {
+    const pool = await getConnection();
+    const request = pool.request();
+
+    let query = `
+      SELECT COALESCE(SUM(SoLuot), 0) AS TongLuotHomNay
+      FROM LUOT_TRUY_CAP_NGAY
+      WHERE NgayTruyCap = CAST(GETDATE() AS DATE)
+    `;
+
+    if (duongDan) {
+      request.input("DuongDan", sql.VarChar(100), duongDan);
+      query += " AND DuongDan = @DuongDan";
+    }
+
+    const result = await request.query(query);
+    const TongLuot = Number(result.recordset[0]?.TongLuotHomNay) || 0;
+    return res.json({
+      success: true,
+      data: {
+        tongLuotHomNay: TongLuot,
+      },
+    });
+  } catch (err) {
+    console.error("Lỗi khi lấy dữ liệu!", err);
+    return res.status(500).json({
+      success: false,
+      message: "Lỗi lấy dữ liệu truy cập: " + err.message,
+    });
+  }
+});
+
 // api cập nhật lượt truy cập
 app.post("/api/luottruycap", async (req, res) => {
-  const duongDan = (req.body?.duongDan || req.query?.duongDan || "/").toString().slice(0, 100);
+  const duongDan = (req.body?.duongDan || req.query?.duongDan || "/")
+    .toString()
+    .slice(0, 100);
 
-  try{
+  try {
     const pool = await getConnection();
 
     const result = await pool
-    .request()
-    .input("DuongDan", sql.VarChar(100), duongDan)
-    .query(`
+      .request()
+      .input("DuongDan", sql.VarChar(100), duongDan).query(`
       MERGE LUOT_TRUY_CAP_NGAY AS target
       USING (
         SELECT CAST(GETDATE() AS DATE) AS NgayTruyCap, @DuongDan AS DuongDan
       ) AS Source
        ON target.NgayTruyCap = Source.NgayTruyCap
-       AND target.NgayTruyCap = Source.NgayTruyCap
-       WHEN MATCH THEN
+       AND target.DuongDan = Source.DuongDan
+       WHEN MATCHED THEN
        UPDATE SET target.SoLuot = target.SoLuot + 1
-       WHEN NOT MATCH THEN 
+       WHEN NOT MATCHED THEN
        INSERT (NgayTruyCap, DuongDan, SoLuot)
        VALUES (Source.NgayTruyCap, Source.DuongDan, 1)
        OUTPUT inserted.NgayTruyCap, inserted.DuongDan, inserted.SoLuot;
@@ -808,12 +844,11 @@ app.post("/api/luottruycap", async (req, res) => {
       message: "Đâ ghi nhận lượt truy cập hôm nay!",
       data: result.recordset[0],
     });
-  }
-  catch(err) {
+  } catch (err) {
     console.error("Lỗi ghi nhận lượt truy cập: ", err);
     return res.status(500).json({
       success: false,
-      message: "Lỗi kêt nối server khi ghi nhận lượt truy cập!" + err.message
+      message: "Lỗi kêt nối server khi ghi nhận lượt truy cập!" + err.message,
     });
   }
 });

@@ -84,6 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
   tai_ChiTietThucDon();
   tai_TrangThaiMonAn();
   lay_DanhSachLuotQuanTam();
+  ghinhanClientGheTrang(window.location.pathname);
 });
 //------------------------------------------------------------------------------
 
@@ -837,7 +838,7 @@ function ve_BieuDoLuotThich(danhsachMon) {
 function renderBXH(danhsachMon) {
   const tbody = document.getElementById("bxh-monan");
   if (!tbody || !Array.isArray(danhsachMon)) return;
-  
+
   let TongLike = 0;
   const luotthichMoi = {};
   tbody.innerHTML = "";
@@ -880,10 +881,10 @@ function renderBXH(danhsachMon) {
   renderSoLieu(TongLike, danhsachMon[0]);
 }
 
-function renderSoLieu(like, item){
-  const soLuotThich = document.getElementById('soluotthich');
-  const tenMon = document.getElementById('monduocthich');
-  if(!soLuotThich || !tenMon) return;
+function renderSoLieu(like, item) {
+  const soLuotThich = document.getElementById("soluotthich");
+  const tenMon = document.getElementById("monduocthich");
+  if (!soLuotThich || !tenMon) return;
 
   soLuotThich.textContent = String(like);
   tenMon.textContent = item.TenMon;
@@ -1114,7 +1115,58 @@ async function delAdmin(item) {
 
 //==================================== THEO DÕI LƯỢT TRUY CẬP HÀNG NGÀY ============================
 
-// 1H SÁNG 23/11/2026 TỚI ĐÂY RỒI NHE
+// hàm hiển thị lượt truy cập
+function hienthiLuotTruyCap(soLuot) {
+  const element = document.getElementById("tongluotxem");
+  if (element) {
+    element.textContent = String(Number(soLuot));
+  }
+}
+
+// Gọi api lấy lượt khách
+async function tai_LuotKhachTruyCap(duongDan = "") {
+  try {
+    const query = duongDan ? `?duongDan=${encodeURIComponent(duongDan)}` : "";
+    const res = await fetch(`${API_BASE_URL}/api/luottruycap/homnay${query}`);
+    const result = await res.json();
+
+    if (res.ok && result.success && result.data) {
+      hienthiLuotTruyCap(result.data.tongLuotHomNay);
+    }
+  } catch (err) {
+    console.error("Lỗi kết nối server: ", err);
+  }
+}
+
+// gọi api cập nhật lượt truy cập liên tục hàng ngày
+async function ghinhanClientGheTrang(
+  duongDan = window.location.pathname || "/",
+) {
+  try {
+    //tránh bấm f5 liên tục trên cùng 1 tab
+    const today = new Date().toISOString().slice(0, 10);
+    const cacheKey = `visited_${duongDan}_${today}`;
+    if (sessionStorage.getItem(cacheKey)) {
+      await tai_LuotKhachTruyCap();
+      return;
+    }
+
+    const res = await fetch(`${API_BASE_URL}/api/luottruycap`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ duongDan }),
+    });
+
+    const result = await res.json();
+
+    if (res.ok && result.success) {
+      sessionStorage.setItem(cacheKey, "1");
+      await tai_LuotKhachTruyCap();
+    }
+  } catch (err) {
+    console.error("Không ghi nhận được lượt truy cập: ", err);
+  }
+}
 
 //--------------------------------------------------------------------------------------------------
 
