@@ -5,50 +5,380 @@
     <title>Thực đơn căn tin TVU</title>
     <meta charset="utf-8" />
     <link href="css/style.css" rel="StyleSheet" />
+    <link rel="stylesheet" href="font/themify-icons/themify-icons.css" />
   </head>
   <!--Hết phần head-->
 
   <!--Bắt đầu Trang Web (body)-->
   <body>
     <!--phần header-->
-    <div id="header">
-      <div id="logo">
-        <img id="logoTVU" src="images/logoTVU.png" />
-      </div>
-      <div id="heading-search-menu">
-        <div id="heading-home">Thực đơn căn tin trường</div>
-        <div id="search-menu">
-          <form class="frm-search">
-            <input
-              type="text"
-              name="search-box"
-              id="search-box"
-              placeholder="Tìm kiếm món ăn"
-            />
-          </form>
-
-          <ul id="header-menu">
-            <!--Javascrip lấy tên nhóm món ra từ cơ sở dữ liệu và tạo một phần từ <li></li> mới -> thêm vào id này-->
-            <li class="nhom-mon"><a href="#">Món chính</a></li>
-            <li class="nhom-mon"><a href="#">Món phụ</a></li>
-            <li class="nhom-mon"><a href="#">Tráng miệng</a></li>
-            <li class="nhom-mon"><a href="#">Thức uống</a></li>
+    <header id="index-header">
+      <div id="header-thongtin">
+        <div id="header-logo-ten">
+          <!-- <img src="logoDA.png" alt="logo" /> -->
+          <p>Căn tin<br /><span>trường học</span></p>
+        </div>
+        <div id="header-timkiem">
+          <input type="text" id="timkiemmonan" placeholder="Tìm kiếm món ăn" />
+          <i class="ti-search" id="timMon"></i>
+        </div>
+        <div id="header-loginadmin">
+          <a href="admin.html">Đăng nhập quản trị</a>
         </div>
       </div>
-    </div>
+
+      <nav id="header-nav" class="danhmuc">
+        <label for="nhommon-all"
+          >All<input
+            type="radio"
+            name="nhommon"
+            id="nhommon-all"
+            value="All"
+            checked
+        /></label>
+
+        <label for="nhommon-chinh"
+          >Món chính<input
+            type="radio"
+            name="nhommon"
+            id="nhommon-chinh"
+            value="N01"
+        /></label>
+
+        <label for="nhommon-thucuong"
+          >Thức uống<input
+            type="radio"
+            name="nhommon"
+            id="nhommon-thucuong"
+            value="N03"
+        /></label>
+
+        <label for="nhommon-trangmieng"
+          >Tráng miệng<input
+            type="radio"
+            name="nhommon"
+            id="nhommon-trangmieng"
+            value="N04"
+        /></label>
+      </nav>
+    </header>
     <!--Kết thúc header-->
 
     <!--phần content-->
     <div id="content">
-      <div id="sidebar"></div>
-      <div id="danhmucbuoi"></div>
-      <div id="monan"></div>
+      <section class="hot-section">
+        <p>Món <span>HOT</span> Được Yêu Thích Nhất</p>
+
+        <div class="hot-dish-container">
+          <button class="slider-nav-btn prev-btn" id="hot-prev-btn">
+            &#10094;
+          </button>
+
+          <div class="hot-dishes-track" id="hot-dishes-track">
+            <!-- Dữ liệu món HOT sẽ được JS đổ vào đây -->
+            <div class="hot-card">
+              <div class="image-dish">
+                <span class="tenMon">Tên món</span>
+                <div>
+                  <span style="color: #f00">&#10084;</span>
+                  <span class="luotthich"> 152 </span>
+                </div>
+              </div>
+            </div>
+            <div class="hot-card">
+              <div class="image-dish">
+                <span class="tenMon">Tên món</span>
+                <div>
+                  <span style="color: #f00">&#10084;</span>
+                  <span class="luotthich"> 152 </span>
+                </div>
+              </div>
+            </div>
+            <div class="hot-card">
+              <div class="image-dish">
+                <span class="tenMon">Tên món</span>
+                <div>
+                  <span style="color: #f00">&#10084;</span>
+                  <span class="luotthich"> 152 </span>
+                </div>
+              </div>
+            </div>
+            <div class="hot-card">
+              <div class="image-dish">
+                <span class="tenMon">Tên món</span>
+                <div>
+                  <span style="color: #f00">&#10084;</span>
+                  <span class="luotthich"> 152 </span>
+                </div>
+              </div>
+            </div>
+            <div class="hot-card">
+              <div class="image-dish">
+                <span class="tenMon">Tên món</span>
+                <div>
+                  <span style="color: #f00">&#10084;</span>
+                  <span class="luotthich"> 152 </span>
+                </div>
+              </div>
+            </div>
+            <div class="hot-card">
+              <div class="image-dish">
+                <span class="tenMon">Tên món</span>
+                <div>
+                  <span style="color: #f00">&#10084;</span>
+                  <span class="luotthich"> 152 </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button class="slider-nav-btn next-btn" id="hot-next-btn">
+            &#10095;
+          </button>
+        </div>
+        <div class="slider-dots" id="hot-slider-dots"></div>
+      </section>
+
+      <div id="danhmucbuoi">
+        <div id="container-detail">
+          <div id="chitietmonan">
+            <div id="img-monan">
+              <img src="#" alt="" />
+            </div>
+            <div id="thongtin-monan">
+              <!-- <div id="btn-close"></i></div> -->
+              <i class="ti-close" onclick="hidePopUp('container-detail')"></i>
+              <h2 id="tenmon-monan">Bún đậu mắm tôm</h2>
+              <p id="giaban-monan">40.000 VND</p>
+              <div id="buoiphucvu-monan">
+                <p>sáng</p>
+                <p>Trưa</p>
+              </div>
+              <p id="mota-monan">Mô tả</p>
+              <p id="tinhtrang-monan" class="status stock-status">Còn món</p>
+              <button id="btn-likes">Bấm quan tâm</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="dayofweek" class="danhmuc">
+          <label for="thu2"
+            ><input type="radio" name="ngaytrongtuan" id="thu2" />Thứ 2</label
+          >
+          <label for="thu3"
+            ><input type="radio" name="ngaytrongtuan" id="thu3" />Thứ 3</label
+          >
+          <label for="thu4"
+            ><input type="radio" name="ngaytrongtuan" id="thu4" />Thứ 4</label
+          >
+          <label for="thu5"
+            ><input type="radio" name="ngaytrongtuan" id="thu5" />Thứ 5</label
+          >
+          <label for="thu6"
+            ><input type="radio" name="ngaytrongtuan" id="thu6" />Thứ 6</label
+          >
+          <label for="thu7"
+            ><input type="radio" name="ngaytrongtuan" id="thu7" />Thứ 7</label
+          >
+          <label for="chunhat"
+            ><input type="radio" name="ngaytrongtuan" id="chunhat" />Chủ
+            nhật</label
+          >
+        </div>
+        <div id="partofday" class="danhmuc">
+          <label for="buoisang"
+            ><input type="radio" name="buoitrongngay" id="buoisang" />Buổi
+            sáng</label
+          >
+          <label for="buoitrua"
+            ><input type="radio" name="buoitrongngay" id="buoitrua" />Buổi
+            trưa</label
+          >
+          <label for="buoichieu"
+            ><input type="radio" name="buoitrongngay" id="buoichieu" />Buổi
+            chiều</label
+          >
+        </div>
+      </div>
+      <div id="dishes-container">
+        <div class="card-dishes">
+          <img class="image-dishes" src="#" alt="Hình ảnh món ăn" />
+
+          <div class="infor-dishes">
+            <div class="name-price-dishes">
+              <span class="name-dishes">Tên món</span>
+              <span class="price-dishes">45.000 VNĐ</span>
+            </div>
+            <div class="status-dishes">
+              <p class="status stock-status">còn món</p>
+            </div>
+          </div>
+          <div class="likes-dishes">
+            <label for="MA001">
+              <input type="checkbox" name="quantam" id="MA001" />
+              <span>&#9825;</span> Quan tâm
+            </label>
+          </div>
+        </div>
+
+        <div class="card-dishes">
+          <img class="image-dishes" src="#" alt="Hình ảnh món ăn" />
+
+          <div class="infor-dishes">
+            <div class="name-price-dishes">
+              <span class="name-dishes">Tên món</span>
+              <span class="price-dishes">45.000 VNĐ</span>
+            </div>
+            <div class="status-dishes">
+              <p class="status runout-status">hết món</p>
+            </div>
+          </div>
+          <div class="likes-dishes">
+            <label for="MA002">
+              <input type="checkbox" name="quantam" id="MA002" />
+              <span>&#9825;</span> Quan tâm
+            </label>
+          </div>
+        </div>
+
+        <div class="card-dishes">
+          <img class="image-dishes" src="#" alt="Hình ảnh món ăn" />
+
+          <div class="infor-dishes">
+            <div class="name-price-dishes">
+              <span class="name-dishes">Tên món</span>
+              <span class="price-dishes">45.000 VNĐ</span>
+            </div>
+            <div class="status-dishes">
+              <p class="status stock-status">còn món</p>
+            </div>
+          </div>
+          <div class="likes-dishes">
+            <label for="MA001">
+              <input type="checkbox" name="quantam" id="MA001" />
+              <span>&#9825;</span> Quan tâm
+            </label>
+          </div>
+        </div>
+        <div class="card-dishes">
+          <img class="image-dishes" src="#" alt="Hình ảnh món ăn" />
+
+          <div class="infor-dishes">
+            <div class="name-price-dishes">
+              <span class="name-dishes">Tên món</span>
+              <span class="price-dishes">45.000 VNĐ</span>
+            </div>
+            <div class="status-dishes">
+              <p class="status stock-status">còn món</p>
+            </div>
+          </div>
+          <div class="likes-dishes">
+            <label for="MA001">
+              <input type="checkbox" name="quantam" id="MA001" />
+              <span>&#9825;</span> Quan tâm
+            </label>
+          </div>
+        </div>
+        <div class="card-dishes">
+          <img class="image-dishes" src="#" alt="Hình ảnh món ăn" />
+
+          <div class="infor-dishes">
+            <div class="name-price-dishes">
+              <span class="name-dishes">Tên món</span>
+              <span class="price-dishes">45.000 VNĐ</span>
+            </div>
+            <div class="status-dishes">
+              <p class="status stock-status">còn món</p>
+            </div>
+          </div>
+          <div class="likes-dishes">
+            <label for="MA001">
+              <input type="checkbox" name="quantam" id="MA001" />
+              <span>&#10084;</span> Quan tâm
+            </label>
+          </div>
+        </div>
+        <!--  -->
+      </div>
     </div>
     <!--Kết thúc content-->
 
     <!--phần footer-->
-    <div id="footer"></div>
+    <div id="footer">
+      <div id="container-frm">
+        <div id="frm-gopy">
+          <div>
+            <h2>Biểu mẫu góp ý</h2>
+            <i class="ti-close" onclick="hidePopUp('container-frm')"></i>
+          </div>
+          <form id="frm">
+            <input
+              type="text"
+              id="hoten"
+              class="input-gopy"
+              placeholder="Nhập họ tên của bạn"
+            />
+            <textarea
+              type="text"
+              name="mota-gopy"
+              id="mota-gopy"
+              rows="4"
+              class="input-gopy"
+              placeholder="Mô tả vấn đề hoặc góp ý của bạn..."
+            ></textarea>
+            <input
+              type="submit"
+              id="btn-submit"
+              class="input-gopy"
+              value="Gửi"
+            />
+          </form>
+        </div>
+      </div>
+      <div id="thongtin">
+        <div id="thongtin-cantin" class="footer-column">
+          <div>
+            <img src="images/logoDA.png" alt="logoWeb" />
+            <h2>Căn tin<br />trường học</h2>
+          </div>
+          <p>
+            Hệ thống tra cứu thực đơn & món ăn hàng ngày dành cho sinh viên, học
+            sinh.
+          </p>
+        </div>
+        <div id="lienket" class="footer-column">
+          <h2>Liên kết nhanh</h2>
+          <ul>
+            <li><a href="#">Trang chủ</a></li>
+            <li><a href="#content">Món ăn hot</a></li>
+            <li><a href="#danhmucbuoi">Thực đơn</a></li>
+            <li>
+              <span id="show-gopy" onclick="showPopUp('container-frm')"
+                >Góp ý</span
+              >
+            </li>
+          </ul>
+        </div>
+        <div id="giophucvu" class="footer-column">
+          <h2>Khung giờ phục vụ</h2>
+          <p><i class="ti-shine"></i> Sáng: 05H00 - 09H00</p>
+          <p><i class="ti-time"></i> Trưa: 10H00 - 14H00</p>
+          <p><i class="ti-cloud"></i> Chiều: 15H00 - 18H00</p>
+        </div>
+        <div id="lienhe" class="footer-column">
+          <h2>Thông tin liên hệ</h2>
+          <p><i class="ti-mobile"></i> 0379580060</p>
+          <p><i class="ti-email"></i> cantin@ct.tvu.edu.vn</p>
+          <p><i class="ti-location-pin"></i> Khu I - Đại học Trà Vinh</p>
+        </div>
+      </div>
+      <div id="copy-right">
+        <p>@2026 Ngô Hoài Linh. Đồ án cơ sở ngành</p>
+        <a href="#"><i class="ti-lock"></i> quản trị viên</a>
+      </div>
+    </div>
     <!--Kết thúc footer-->
+    <script src="index.js" type="module"></script>
   </body>
   <!--Kết thúc phần Trang Webbody-->
 </html>

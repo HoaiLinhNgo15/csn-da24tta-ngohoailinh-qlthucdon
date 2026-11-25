@@ -228,3 +228,5 @@ GROUP BY A.MaMon, A.TenMon, A.HinhAnh, C.MaNhom, C.TenNhom
 ORDER BY TongLuotThich DESC
 
 SELECT A.MaMon, A.TenMon, A.HinhAnh, C.MaNhom, C.TenNhom, COALESCE(SUM(B.LuotQuanTam), 0) AS TongLuotThich FROM MONAN AS A LEFT JOIN CHI_TIET_THUC_DON AS B ON A.MaMon = B.MaMon INNER JOIN NHOMMON AS C ON C.MaNhom = A.MaNhom GROUP BY A.MaMon, A.TenMon, A.HinhAnh, C.MaNhom, C.TenNhom ORDER BY TongLuotThich DESC
+
+SELECT * FROM LUOT_TRUY_CAP_NGAY
