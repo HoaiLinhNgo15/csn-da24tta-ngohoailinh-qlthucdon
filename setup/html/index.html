@@ -50,7 +50,7 @@
             type="radio"
             name="nhommon"
             id="nhommon-thucuong"
-            value="N03"
+            value="N04"
         /></label>
 
         <label for="nhommon-trangmieng"
@@ -58,7 +58,7 @@
             type="radio"
             name="nhommon"
             id="nhommon-trangmieng"
-            value="N04"
+            value="N03"
         /></label>
       </nav>
     </header>
@@ -85,6 +85,7 @@
                 </div>
               </div>
             </div>
+
             <div class="hot-card">
               <div class="image-dish">
                 <span class="tenMon">Tên món</span>
@@ -163,45 +164,91 @@
 
         <div id="dayofweek" class="danhmuc">
           <label for="thu2"
-            ><input type="radio" name="ngaytrongtuan" id="thu2" />Thứ 2</label
+            ><input
+              type="radio"
+              data-day="1"
+              name="ngaytrongtuan"
+              id="thu2"
+            />Thứ 2</label
           >
           <label for="thu3"
-            ><input type="radio" name="ngaytrongtuan" id="thu3" />Thứ 3</label
+            ><input
+              type="radio"
+              data-day="2"
+              name="ngaytrongtuan"
+              id="thu3"
+            />Thứ 3</label
           >
           <label for="thu4"
-            ><input type="radio" name="ngaytrongtuan" id="thu4" />Thứ 4</label
+            ><input
+              type="radio"
+              data-day="3"
+              name="ngaytrongtuan"
+              id="thu4"
+            />Thứ 4</label
           >
           <label for="thu5"
-            ><input type="radio" name="ngaytrongtuan" id="thu5" />Thứ 5</label
+            ><input
+              type="radio"
+              data-day="4"
+              name="ngaytrongtuan"
+              id="thu5"
+            />Thứ 5</label
           >
           <label for="thu6"
-            ><input type="radio" name="ngaytrongtuan" id="thu6" />Thứ 6</label
+            ><input
+              type="radio"
+              data-day="5"
+              name="ngaytrongtuan"
+              id="thu6"
+            />Thứ 6</label
           >
           <label for="thu7"
-            ><input type="radio" name="ngaytrongtuan" id="thu7" />Thứ 7</label
+            ><input
+              type="radio"
+              data-day="6"
+              name="ngaytrongtuan"
+              id="thu7"
+            />Thứ 7</label
           >
           <label for="chunhat"
-            ><input type="radio" name="ngaytrongtuan" id="chunhat" />Chủ
-            nhật</label
+            ><input
+              type="radio"
+              data-day="7"
+              name="ngaytrongtuan"
+              id="chunhat"
+            />Chủ nhật</label
           >
         </div>
         <div id="partofday" class="danhmuc">
           <label for="buoisang"
-            ><input type="radio" name="buoitrongngay" id="buoisang" />Buổi
-            sáng</label
+            ><input
+              type="radio"
+              name="buoitrongngay"
+              id="buoisang"
+              value="B01"
+            />Buổi sáng</label
           >
           <label for="buoitrua"
-            ><input type="radio" name="buoitrongngay" id="buoitrua" />Buổi
-            trưa</label
+            ><input
+              type="radio"
+              name="buoitrongngay"
+              id="buoitrua"
+              value="B02"
+            />Buổi trưa</label
           >
           <label for="buoichieu"
-            ><input type="radio" name="buoitrongngay" id="buoichieu" />Buổi
-            chiều</label
+            ><input
+              type="radio"
+              name="buoitrongngay"
+              id="buoichieu"
+              value="B03"
+            />Buổi chiều</label
           >
         </div>
       </div>
       <div id="dishes-container">
-        <div class="card-dishes">
+        <div class="card card-dishes">
           <img class="image-dishes" src="#" alt="Hình ảnh món ăn" />
 
           <div class="infor-dishes">
@@ -374,7 +421,7 @@
       </div>
       <div id="copy-right">
         <p>@2026 Ngô Hoài Linh. Đồ án cơ sở ngành</p>
-        <a href="#"><i class="ti-lock"></i> quản trị viên</a>
+        <a href="admin.html"><i class="ti-lock"></i> quản trị viên</a>
       </div>
     </div>
     <!--Kết thúc footer-->

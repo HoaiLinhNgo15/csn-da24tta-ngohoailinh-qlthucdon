@@ -219,8 +219,11 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 72%;
+  color: #fff;
 }
 .luotthich {
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .slider-nav-btn {
@@ -328,7 +331,7 @@ body {
 }
 
 .image-dishes {
-  height: 84px;
+  height: 160px;
   width: 100%;
   border-radius: 16px;
 }
@@ -482,6 +485,7 @@ li a {
   text-decoration: none;
   color: #000;
   font-size: 13pt;
+  cursor: pointer;
 }
 
 #lienhe {
@@ -616,7 +620,7 @@ li a {
   left: 0;
   right: 0;
   background-color: rgba(0, 0, 0, 0.3);
-  display: flex;
+  display: none;
   justify-content: center;
   align-items: center;
   z-index: 10;

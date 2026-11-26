@@ -855,6 +855,53 @@ app.post("/api/luottruycap", async (req, res) => {
 
 //------------------------------------------------------------------------------
 
+//======================= TRANG CHỦ - LẤY DỮ LIỆU THEO THỰC ĐƠN ================
+
+app.get("/api/trangchu/thucdon", async (req, res) => {
+  let { maNhom, ngay, maBuoi } = req.query;
+
+  if (!ngay) {
+    return res.status(400).json({
+      success: false,
+      message: "Không nhận được đầu vào truy vấn!",
+    });
+  }
+  let query =
+    "SELECT * FROM CHI_TIET_THUC_DON AS A LEFT JOIN MONAN AS B ON A.MaMon = B.MaMon WHERE B.MaNhom = @MaNhom AND A.NgayPhucVu = @NgayPhucVu AND A.MaBuoi = @MaBuoi";
+  if (!maNhom) {
+    maNhom = "All";
+    query =
+      "SELECT * FROM CHI_TIET_THUC_DON AS A LEFT JOIN MONAN AS B ON A.MaMon = B.MaMon WHERE A.NgayPhucVu = @NgayPhucVu AND A.MaBuoi = @MaBuoi";
+  }
+
+  try {
+    const pool = await getConnection();
+    const result = await pool
+      .request()
+      .input("MaNhom", sql.VarChar(10), maNhom)
+      .input("NgayPhucVu", sql.Date, ngay)
+      .input("MaBuoi", sql.VarChar(10), maBuoi)
+      .query(query);
+
+    return res.json({
+      success: true,
+      message: "Truy vấn dữ liệu theo thực đơn thành công",
+      data: result.recordset,
+    });
+  } catch (err) {
+    console.error(
+      "Không thể truy vấn cơ sở dữ liệu cho thực đơn trên TRANG CHỦ!",
+    );
+    return res.status(500).json({
+      success: false,
+      message:
+        "Không thể kêt nối server để truy vấn (API trangchu)!" + err.message,
+    });
+  }
+});
+
+//------------------------------------------------------------------------------
+
 app.get("/", (req, res) => {
   res.send("Chào mừng bạn đến với hệ thống Quản lý Canteen!");
 });
