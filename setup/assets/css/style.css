@@ -53,17 +53,21 @@ body {
 #header-timkiem {
   flex: 1.5;
   display: flex;
+  position: relative;
+  padding: 0;
 }
 
 #timMon {
   line-height: 44px;
-  position: relative;
-  right: 32px;
+  position: absolute;
+  right: 20px;
   height: 44px;
   color: #666;
+  font-weight: 700;
 }
 
-#header-timkiem input {
+#timkiemmonan {
+  display: block;
   width: 100%;
   height: 44px;
   box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.05);
@@ -71,14 +75,66 @@ body {
   border-radius: 16px;
   padding: 12px;
   font-weight: 500;
-  background-color: #fff;
+  background-color: #fafdff;
   outline: none;
   color: #666;
 }
-#header-timkiem input:focus-within {
-  border-color: var(--accent-main);
-  background-color: #f8fafc;
+#timkiemmonan:focus-within {
+  border: none;
+  background-color: #cbd5e1;
   box-shadow: 4px 3px 10px 0px rgba(0, 0, 0, 0.1);
+  border-radius: 16px 16px 0 0;
+}
+
+#header-timkiem:focus-within #container-timkiem {
+  display: block;
+}
+
+#container-timkiem {
+  display: none;
+  position: absolute;
+  background-color: #9ca6b1;
+  width: 100%;
+  top: 44px;
+  padding: 12px;
+  border-radius: 0 0 16px 16px;
+  z-index: 10;
+  box-shadow: 4px 3px 10px 0px rgba(0, 0, 0, 0.1);
+}
+
+.timkiem-card-dishes {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  height: 48px;
+  gap: 8px;
+}
+
+.timkiem-card-dishes:hover {
+  border: 2px solid #cbd5e1;
+  background-color: #a8b1bb;
+}
+.timkiem-card-dishes:hover .timkiem-thongtin-tenmon,
+.timkiem-card-dishes:hover .timkiem-thongtin-nhommon {
+  color: #2d343b;
+}
+
+.timkiem-card-dishes img {
+  height: 100%;
+  border-radius: 12px;
+}
+
+.timkiem-thongtin-dishes {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.timkiem-thongtin-tenmon {
+  font-weight: 700;
+  text-transform: capitalize;
+}
+.timkiem-thongtin-nhommon {
+  font-size: 13pt;
 }
 
 #header-loginadmin {
@@ -406,10 +462,20 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 2px solid var(--accent-main);
+  border: 1px solid var(--accent-main);
   padding: 0 6px;
   border-radius: 14px;
   /* cursor: pointer; */
+  cursor: pointer;
+  height: 44px;
+}
+
+.likes-dishes label:hover {
+  background-color: var(--accent-main);
+}
+
+.likes-dishes label:hover span {
+  color: #fff;
 }
 
 .likes-dishes label span {
@@ -699,7 +765,6 @@ li a {
 }
 
 #btn-likes {
-  margin-top: 12px;
   width: 100%;
   background-color: var(--accent-main);
   border: none;
@@ -708,4 +773,13 @@ li a {
   color: #fff;
   font-weight: 600;
   padding: 6px;
+}
+
+#thongtin-monan .likes-dishes {
+  margin-top: 12px;
+  padding: 0;
+}
+
+#thongtin-monan .likes-dishes label {
+  width: 100%;
 }

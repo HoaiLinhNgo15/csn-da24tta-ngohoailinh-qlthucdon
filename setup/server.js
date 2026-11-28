@@ -900,6 +900,139 @@ app.get("/api/trangchu/thucdon", async (req, res) => {
   }
 });
 
+// api cập nhật lượt quan tâm
+app.post("/api/trangchu/luotquantam", async (req, res) => {
+  const { liked, maCT } = req.query;
+
+  if (
+    liked === undefined ||
+    liked === null ||
+    String(liked).trim() === "" ||
+    !maCT
+  ) {
+    return res.status(400).json({
+      success: false,
+      message: "Không nhận được dữ liệu đầu vào (CẬP NHẬT LƯỢT QUAN TÂM)",
+    });
+  }
+
+  const likedStr = String(liked).trim().toLowerCase();
+  if (
+    likedStr !== "true" &&
+    likedStr !== "false" &&
+    likedStr !== "1" &&
+    likedStr !== "0"
+  ) {
+    return res.status(400).json({
+      success: false,
+      message: "Giá trị liked không hợp lệ!",
+    });
+  }
+
+  const isLiked = likedStr === "true" || likedStr === "1";
+  const maChiTiet = String(maCT).trim();
+
+  try {
+    const pool = await getConnection();
+    const result = await pool
+      .request()
+      .input("MaChiTiet", sql.VarChar(10), maChiTiet)
+      .input("isLiked", sql.Bit, isLiked ? 1 : 0).query(`
+        UPDATE CHI_TIET_THUC_DON
+        SET LuotQuanTam = CASE
+          WHEN @isLiked = 1 THEN COALESCE (LuotQuanTam, 0) + 1
+          WHEN COALESCE(LuotQuanTam, 0) > 0 THEN COALESCE(LuotQuanTam, 0) - 1
+          ELSE 0
+        END OUTPUT inserted.MaChiTiet, inserted.LuotQuanTam
+        WHERE MaChiTiet = @MaChiTiet;
+
+      `);
+
+    if (!result.recordset || result.recordset.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Không tìm thấy chi tiết thực đơn tương ứng!",
+      });
+    }
+
+    const LuotQuanTamMoi = Number(result.recordset[0].LuotQuanTam) || 0;
+
+    return res.json({
+      success: true,
+      message: "Cập nhật lượt quan tâm thành công!",
+      data: {
+        maChiTiet,
+        LuotQuanTam: LuotQuanTamMoi,
+      },
+    });
+  } catch (err) {
+    console.error("Cập nhật lượt quan tâm không thành công!", err);
+    return res.status(500).json({
+      success: false,
+      message:
+        "Không thể cập nhật lượt quan tâm, Kết nối server thất bại!" +
+        err.message,
+    });
+  }
+});
+
+// api xem chi tiết một món ăn
+app.get("/api/trangchu/chitietmonan", async (req, res) => {
+  // const { maMon, ngay } = req.query;
+
+  // if (!maMon || !ngay || String(maMon).trim() === "" || String(ngay).trim() === "") {
+  //   return res.status(400).json({
+  //     success: false,
+  //     message: "Không nhận dữ liệu để thực hiện truy vấn!",
+  //   });
+  // }
+
+  const { maMon, ngay } = req.query;
+
+  const rawMaMon = Array.isArray(maMon) ? maMon[0] : maMon;
+  const rawNgay = Array.isArray(ngay) ? ngay[0] : ngay;
+
+  const maMonClean = String(rawMaMon || "")
+    .split(",")[0]
+    .trim()
+    .slice(0, 10);
+  const ngayClean = String(rawNgay || "").trim();
+
+  try {
+    const pool = await getConnection();
+    const result = await pool
+      .request()
+      .input("MaMon", sql.VarChar(10), maMonClean)
+      .input("NgayPhucVu", sql.Date, ngayClean).query(`
+      SELECT A.MaChiTiet, A.MaMon, B.TenMon, D.TenBuoi, C.TenNhom, B.GiaBan, B.MoTa, B.HinhAnh, A.TrangThai
+      FROM CHI_TIET_THUC_DON AS A
+      LEFT JOIN MONAN AS B ON A.MaMon = B.MaMon
+      INNER JOIN NHOMMON AS C ON C.MaNhom = B.MaNhom
+      INNER JOIN TD_BUOI AS D ON D.MaBuoi = A.MaBuoi
+      WHERE A.MaMon = @MaMon AND A.NgayPhucVu = @NgayPhucVu
+      `);
+    if (!result.recordset || result.recordset.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Không tìm thấy món nào!",
+      });
+    }
+    return res.json({
+      success: true,
+      message: "Truy vấn dữ liệu thành công!",
+      data: result.recordset,
+    });
+  } catch (err) {
+    console.error("Không nhận được dữ liệu, kết nối server thất bại!", err);
+    return res.status(500).json({
+      success: false,
+      message:
+        "Không nhận được dữ liệu chi tiết món, kết nối server thất bại" +
+        err.message,
+    });
+  }
+});
+
 //------------------------------------------------------------------------------
 
 app.get("/", (req, res) => {

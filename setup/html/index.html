@@ -21,9 +21,36 @@
         <div id="header-timkiem">
           <input type="text" id="timkiemmonan" placeholder="Tìm kiếm món ăn" />
           <i class="ti-search" id="timMon"></i>
+          <div id="container-timkiem">
+            <!--  -->
+            <div class="timkiem-card-dishes">
+              <img src="/images/comtam.png" alt="" />
+              <div class="timkiem-thongtin-dishes">
+                <p class="timkiem-thongtin-tenmon">Tên món</p>
+                <p class="timkiem-thongtin-nhommon">Nhóm món</p>
+              </div>
+            </div>
+            <!--  -->
+            <div class="timkiem-card-dishes">
+              <img src="/images/comtam.png" alt="" />
+              <div class="timkiem-thongtin-dishes">
+                <p class="timkiem-thongtin-tenmon">Tên món</p>
+                <p class="timkiem-thongtin-nhommon">Nhóm món</p>
+              </div>
+            </div>
+            <!--  -->
+            <div class="timkiem-card-dishes">
+              <img src="/images/comtam.png" alt="" />
+              <div class="timkiem-thongtin-dishes">
+                <p class="timkiem-thongtin-tenmon">Tên món</p>
+                <p class="timkiem-thongtin-nhommon">Nhóm món</p>
+              </div>
+            </div>
+            <!--  -->
+          </div>
         </div>
         <div id="header-loginadmin">
-          <a href="admin.html">Đăng nhập quản trị</a>
+          <a href="login.html">Đăng nhập quản trị</a>
         </div>
       </div>
 
@@ -141,10 +168,11 @@
       </section>
 
       <div id="danhmucbuoi">
+        <!--==================================== popup chi tiết món ăn =======================-->
         <div id="container-detail">
           <div id="chitietmonan">
             <div id="img-monan">
-              <img src="#" alt="" />
+              <img id="chitiet-hinhanh" src="#" alt="" />
             </div>
             <div id="thongtin-monan">
               <!-- <div id="btn-close"></i></div> -->
@@ -153,14 +181,22 @@
               <p id="giaban-monan">40.000 VND</p>
               <div id="buoiphucvu-monan">
                 <p>sáng</p>
-                <p>Trưa</p>
+                <p>trưa</p>
               </div>
               <p id="mota-monan">Mô tả</p>
               <p id="tinhtrang-monan" class="status stock-status">Còn món</p>
-              <button id="btn-likes">Bấm quan tâm</button>
+              <!-- <button id="btn-likes">Bấm quan tâm</button> -->
+
+              <div class="likes-dishes">
+                <label for="btn-quantam">
+                  <input type="checkbox" id="btn-quantam" />
+                  <span id="icon-heart-chitiet">&#9825;</span>
+                </label>
+              </div>
             </div>
           </div>
         </div>
+        <!-- =================================================================== -->
 
         <div id="dayofweek" class="danhmuc">
           <label for="thu2"
@@ -244,6 +280,14 @@
               id="buoichieu"
               value="B03"
             />Buổi chiều</label
+          >
+          <label for="buoitoi"
+            ><input
+              type="radio"
+              name="buoitrongngay"
+              id="buoitoi"
+              value="B04"
+            />Buổi tối</label
           >
         </div>
       </div>
@@ -421,7 +465,7 @@
       </div>
       <div id="copy-right">
         <p>@2026 Ngô Hoài Linh. Đồ án cơ sở ngành</p>
-        <a href="admin.html"><i class="ti-lock"></i> quản trị viên</a>
+        <a href="loginn.html"><i class="ti-lock"></i> quản trị viên</a>
       </div>
     </div>
     <!--Kết thúc footer-->

@@ -179,8 +179,9 @@ WHERE A.NgayPhucVu = '2026-11-14' AND A.MaBuoi = 'B01'
 ORDER BY A.MaBuoi, A.MaChiTiet;
 
 SELECT *
-FROM CHI_TIET_THUC_DON
-WHERE MaMon = 'MA001' AND  NgayPhucVu = '2026-11-14' AND MaBuoi = 'B01'
+FROM CHI_TIET_THUC_DON AS A
+LEFT JOIN MONAN AS B ON A.MaMon = B.MaMon
+WHERE B.MaNhom = 'N01' AND  NgayPhucVu = '2026-11-22' AND MaBuoi = 'B01'
 
 SELECT A.MaMon, A.TenMon, A.HinhAnh, A.GiaBan, B.TenNhom
 FROM MONAN AS A
@@ -229,4 +230,13 @@ ORDER BY TongLuotThich DESC
 
 SELECT A.MaMon, A.TenMon, A.HinhAnh, C.MaNhom, C.TenNhom, COALESCE(SUM(B.LuotQuanTam), 0) AS TongLuotThich FROM MONAN AS A LEFT JOIN CHI_TIET_THUC_DON AS B ON A.MaMon = B.MaMon INNER JOIN NHOMMON AS C ON C.MaNhom = A.MaNhom GROUP BY A.MaMon, A.TenMon, A.HinhAnh, C.MaNhom, C.TenNhom ORDER BY TongLuotThich DESC
 
+SELECT A.MaMon, D.TenBuoi, C.TenNhom, B.GiaBan, B.MoTa, B.HinhAnh, A.TrangThai
+FROM CHI_TIET_THUC_DON AS A
+LEFT JOIN MONAN AS B ON A.MaMon = B.MaMon
+INNER JOIN NHOMMON AS C ON C.MaNhom = B.MaNhom
+INNER JOIN TD_BUOI AS D ON D.MaBuoi = A.MaBuoi
+WHERE A.MaMon = 'MA001' AND A.NgayPhucVu = '2026-11-27'
+
+UPDATE CHI_TIET_THUC_DON SET LuotQuanTam = LuotQuanTam + 1 WHERE MaChiTiet = 'CT001'
+EXEC sp_help 'CHI_TIET_THUC_DON';
 SELECT * FROM LUOT_TRUY_CAP_NGAY
